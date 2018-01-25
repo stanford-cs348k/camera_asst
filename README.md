@@ -48,7 +48,8 @@ __Tips:__
 
 You'll notice that some of the test scenes, like the San Miguel scene, have both very bright regions.  In this part of the assignment, you'll improve the aesthetics of your output images by performing tone adjustment using the local Laplacian filter.  Tone adjustment can result is more pleasing images by preserving detail in both the darkest and brightest regions of the image, such as in the example below:    
 
-![Tone mapping](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/tone_example.jpg "Tone adjustment using local Laplacian filtering.")
+<!--![Tone mapping](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/tone_example.jpg "Tone adjustment using local Laplacian filtering.") -->
+Tone mapping example coming soon...
 
 Despite its deep theoretical interpretations, Local Laplacian filtering is a conceptually simple algorithm that performs image manipulation using two data structures we discussed in class: the Gaussian pyramid and the Laplacian pyramid.
 
