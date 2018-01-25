@@ -15,7 +15,7 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   // In this function you should implement your full RAW image processing pipeline.
   //   (1) Demosaicing
   //   (2) Address sensing defects such as bad pixels and image noise.
-  //   (3) Apply local tone mapping based on the local laplacian filter.
+  //   (3) Apply local tone mapping based on the local laplacian filter or exposure fusion.
   //   (4) gamma correction
     
   // allocate 3-channel RGB output buffer to hold the results after processing 

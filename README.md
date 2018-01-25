@@ -1,5 +1,7 @@
 # CS348V Assignment 2: RAW Processing for the kPhone 348V #
 
+__Due: Wed Feb 7th, 11:59pm (100 total pts)__
+
 In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348V. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. In addition to implementing the necessary image processing to produce a good image, you are also responsible for controlling the focus of the camera.
 
 ## Getting Started ##
@@ -44,18 +46,21 @@ __Tips:__
 * The following is the Bayer filter pattern used on the kPhone's sensor.  Pixel (0,0) is the top-left of the image.
 ![Bayer Array](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/bayer.jpg "Bayer color filter array for the kPhone 348V")
 
-### Part 2: Tone Adjustment Using Local Laplacian Filtering (40 pts) ###
+### Part 2: Tone Adjustment (40 pts) ###
 
-You'll notice that some of the test scenes, like the San Miguel scene, have both very bright regions.  In this part of the assignment, you'll improve the aesthetics of your output images by performing tone adjustment using the local Laplacian filter.  Tone adjustment can result is more pleasing images by preserving detail in both the darkest and brightest regions of the image, such as in the example below:    
+You'll notice that some of the test scenes, like the San Miguel scene, have both very bright regions.  In this part of the assignment, you'll improve the aesthetics of your output images by performing a form of local tone adjustment.  Tone adjustment can result is more pleasing images by preserving detail in both the darkest and brightest regions of the images.
 
 <!--![Tone mapping](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/tone_example.jpg "Tone adjustment using local Laplacian filtering.") -->
-Tone mapping example coming soon...
 
-Despite its deep theoretical interpretations, Local Laplacian filtering is a conceptually simple algorithm that performs image manipulation using two data structures we discussed in class: the Gaussian pyramid and the Laplacian pyramid.
+We'd like to to implement one of two algorithms for tone adjustment: [Local Laplacian Filtering](https://people.csail.mit.edu/sparis/publi/2011/siggraph/), or a simple variant of [Exposure Fusion](https://mericam.github.io/exposure_fusion/index.html).  Although researchers have now established its [theoretical interpretations](https://dl.acm.org/citation.cfm?id=2629645), Local Laplacian filtering is a conceptually simple algorithm that performs image manipulation using two data structures we discussed in class: the Gaussian pyramid and the Laplacian pyramid.
 
-* The first step of this part of the assignment is to implement construction of Gaussian and Laplacian pyramids for the luminance channel of your image. (You will want to convert your result from part 1 into YUV format, and compute single channel Gaussian and Laplacian pyramids on Y.)  We discussed both of these algorithms in class.
+* Regardless of which algorithm you use, the first step of this part of the assignment is to implement construction of Gaussian and Laplacian pyramids for the luminance channel of your image. (You will want to convert your result from part 1 into YUV format, and compute single channel Gaussian and Laplacian pyramids on Y.)  We discussed both of these algorithms in class.
 
-* Given these data structures performing advanced image adjustments like tone manipulation and detail enhancement is surprisingly simple.  We urge you to first read the paper [Local Laplacian Filters: Edge-aware Image Processing with a Laplacian Pyramid](https://people.csail.mit.edu/sparis/publi/2011/siggraph/) (Paris et al. 2011)   to understand the idea of Local Laplacian filtering.  However, in this assignment we suggest you implement the faster version of the algorithm that is presented in Section 3 of [this later paper](https://dl.acm.org/citation.cfm?id=2629645), and explained in [these helpful notes](http://graphics.stanford.edu/courses/cs348v-18-winter/asst/asst2/local_laplacian_notes.pdf) by Raj.
+* Given these data structures performing advanced image adjustments like tone manipulation and detail enhancement is surprisingly simple.
+
+If you pursure a Local Laplacian filtering approach, we urge you to first read the paper [Local Laplacian Filters: Edge-aware Image Processing with a Laplacian Pyramid](https://people.csail.mit.edu/sparis/publi/2011/siggraph/) (Paris et al. 2011) to understand the idea of Local Laplacian filtering. However, we suggest you implement the faster version of the algorithm that is presented in Section 3 of [this later paper](https://dl.acm.org/citation.cfm?id=2629645), and explained in [these helpful notes](http://graphics.stanford.edu/courses/cs348v-18-winter/asst/asst2/local_laplacian_notes.pdf) by Raj.
+
+If you pursue the exposure fusion approach, first read [Mertens et. al 2007](https://mericam.github.io/exposure_fusion/index.html), then take a look at the paragraphs under the heading _"Dynamic Range Compression"_ in Section 6 of the [Google HDR+ paper](Burst Photography for High Dynamic Range and Low-light Imaging on Mobile Cameras) we read in class.  This describes a simple tone adjustment algorithm that is based on Exposure Fusion, but only requires two input images (a low exposure and high exposure image) that you can derive from the RAW image provided to you by the sensor in this assignment. 
 
 ### Part 3: Autofocus (20 pts) ###
 
