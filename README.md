@@ -50,7 +50,7 @@ __Tips:__
 
 You'll notice that some of the test scenes, like the San Miguel scene, have both very bright regions.  In this part of the assignment, you'll improve the aesthetics of your output images by performing a form of local tone adjustment.  Tone adjustment can result is more pleasing images by preserving detail in both the darkest and brightest regions of the images.
 
-To see the benefits possible from these advanced methods, here is a comparison of a naive method (simple gamma correction) vs. Exposure Fusion:
+You can test your tone adjustment algorithm in isolation by using `CameraSensor::GetPerfectImage()` which provides a "perfect" version of the scene (imagine a black-box oracle which could denoise and demosaic perfectly). For example, here is a comparison of a naive method (simple gamma correction) vs. Exposure Fusion on a "perfect" image:
 ![Gamma Correction](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/breakfast-lamps-gamma.bmp "Tone adustument using gamma correction") ![Exposure Fusion](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/breakfast-lamps-ll.bmp "Tone adustument using Exposure Fusion")
 
 We'd like to to implement one of two algorithms for tone adjustment: [Local Laplacian Filtering](https://people.csail.mit.edu/sparis/publi/2011/siggraph/), or a simple variant of [Exposure Fusion](https://mericam.github.io/exposure_fusion/index.html).  Although researchers have now established its [theoretical interpretations](https://dl.acm.org/citation.cfm?id=2629645), Local Laplacian filtering is a conceptually simple algorithm that performs image manipulation using two data structures we discussed in class: the Gaussian pyramid and the Laplacian pyramid.
