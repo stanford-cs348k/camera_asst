@@ -2,6 +2,7 @@
 #define CAMERA_SENSOR_HPP_
 
 #include <array>
+#include <cstring>
 #include <map>
 #include <memory>
 #include <set>
