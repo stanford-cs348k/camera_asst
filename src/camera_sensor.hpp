@@ -4,7 +4,7 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <string>
+#include <cstring>
 #include <vector>
 #include "image.hpp"
 #include "pixel.hpp"

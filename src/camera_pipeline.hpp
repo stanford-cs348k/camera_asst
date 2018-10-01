@@ -25,5 +25,3 @@ class CameraPipeline : public CameraPipelineInterface {
   //
   // END: CS348K STUDENTS MODIFY THIS CODE  
 };
-
-#endif  // CAMERA_PIPELINE_HPP_
