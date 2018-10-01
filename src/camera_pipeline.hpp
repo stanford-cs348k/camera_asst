@@ -21,11 +21,11 @@ class CameraPipeline : public CameraPipelineInterface {
   std::unique_ptr<Image<RgbPixel>> ProcessShot() const override;
   void AutoFocus() override;
 
-  // BEGIN: CS348V STUDENTS MODIFY THIS CODE
+  // BEGIN: CS348K STUDENTS MODIFY THIS CODE
   //
   // You can add any necessary private member variables or functions.
   //
-  // END: CS348V STUDENTS MODIFY THIS CODE  
+  // END: CS348K STUDENTS MODIFY THIS CODE  
 };
 
 #endif  // CAMERA_PIPELINE_HPP_

@@ -1,8 +1,8 @@
-# CS348V Assignment 2: RAW Processing for the kPhone 348V #
+# CS348K Assignment 2: RAW Processing for the kPhone 348K #
 
 __Due: Wed Feb 7th, 11:59pm (100 total pts)__
 
-In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348V. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. In addition to implementing the necessary image processing to produce a good image, you are also responsible for controlling the focus of the camera.
+In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348K. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. In addition to implementing the necessary image processing to produce a good image, you are also responsible for controlling the focus of the camera.
 
 ## Getting Started ##
 
@@ -44,7 +44,7 @@ __Tips:__
 * We guarantee that pixel defects (stuck pixels, pixels with extra sensitivity) are static defects that are the same for every photograph taken by the camera (for a given scene -- it can vary between scenes). (Hint: What does this suggest a simple way to "calibrate" your camera for static defects?) Note that while the overall noise statistics of the sensor are the same per photograph, the perturbation of individual pixel values due to noise varies per photograph (that's the nature of noise!).
 * You may assume that RAW input data from the sensor will be in the range [0, 1].
 * The following is the Bayer filter pattern used on the kPhone's sensor.  Pixel (0,0) is the top-left of the image.
-![Bayer Array](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/bayer.jpg "Bayer color filter array for the kPhone 348V")
+![Bayer Array](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/bayer.jpg "Bayer color filter array for the kPhone 348K")
 
 ### Part 2: Tone Adjustment (40 pts) ###
 
@@ -73,9 +73,9 @@ As you're probably well aware from your own life experiences, it can be very fru
 
 Much of the scaffolding code (reading and writing data, storing images, etc.) is provided for you. Your changes should only go in regions marked like:
 
-    // BEGIN: CS348V STUDENTS MODIFY THIS CODE 
+    // BEGIN: CS348K STUDENTS MODIFY THIS CODE 
     ...
-    // END: CS348V STUDENTS MODIFY THIS CODE 
+    // END: CS348K STUDENTS MODIFY THIS CODE 
 
 Only two files contain such regions:
 * `camera_pipeline.hpp` and `camera_pipeline.cpp` where you can customize the `CameraPipeline` class (while maintaining the same API), and implement the camera pipeline itself.

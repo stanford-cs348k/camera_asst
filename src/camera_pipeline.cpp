@@ -2,7 +2,7 @@
 
 std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
     
-  // BEGIN: CS348V STUDENTS MODIFY THIS CODE
+  // BEGIN: CS348K STUDENTS MODIFY THIS CODE
 
   // put the lens cap on if you'd like to measure a "dark frame"
   sensor_->SetLensCap(false);
@@ -41,17 +41,17 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   // return processed image output
   return image;
 
-  // END: CS348V STUDENTS MODIFY THIS CODE  
+  // END: CS348K STUDENTS MODIFY THIS CODE  
 }
 
 
 void CameraPipeline::AutoFocus() {
     
-  // BEGIN: CS348V STUDENTS MODIFY THIS CODE  
+  // BEGIN: CS348K STUDENTS MODIFY THIS CODE  
     
   // your autofocus implementation should go here
 
   sensor_->SetFocalPlane(0.f);
   
-  // END: CS348V STUDENTS MODIFY THIS CODE  
+  // END: CS348K STUDENTS MODIFY THIS CODE  
 }

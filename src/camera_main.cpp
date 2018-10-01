@@ -28,13 +28,13 @@ int main(int argc, char** argv) {
   
   camera_sensor->SetLensCap(false);
   
-  // BEGIN: CS348V STUDENTS MODIFY THIS CODE 
+  // BEGIN: CS348K STUDENTS MODIFY THIS CODE 
   // You can modify the CameraPipeline class, including the constructor.
 
   std::unique_ptr<CameraPipelineInterface> pipeline;
   pipeline.reset(new CameraPipeline(camera_sensor.get()));
   
-  // END: CS348V STUDENTS MODIFY THIS CODE 
+  // END: CS348K STUDENTS MODIFY THIS CODE 
   
   auto image = pipeline->TakePicture();
   if (not image) {
