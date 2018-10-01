@@ -1,8 +1,6 @@
-#ifndef CAMERA_SENSOR_HPP_
-#define CAMERA_SENSOR_HPP_
+#pragma once
 
 #include <array>
-#include <cstring>
 #include <map>
 #include <memory>
 #include <set>
@@ -72,25 +70,6 @@ class CameraSensor {
   // Returns height (in pixels) of images that this sensor captures.
   virtual int GetSensorHeight() const = 0;
 
-  // Returns the current focal distance of the sensor.
-  virtual float GetFocalPlane() const = 0;
-
-  // Gets the minimum possible focal distance of the sensor. Note that it's
-  // possible that the current scene does not allow for variable focus, so the minimum
-  // focus may be equal to the maximum focus.
-  virtual int GetMinFocalPlane() const = 0;
-
-  // Gets the maximum possible focal distance of the sensor. Note that it's
-  // possible that the current scene does not allow for variable focus, so the minimum
-  // focus may be equal to the maximum focus.
-  virtual int GetMaxFocalPlane() const = 0;
-
-  // Sets the current focal depth of the camera to @focal_plane. If @focal_plane
-  // lies outside of the range spanned by the camera, the focal plane is clamped
-  // to the range. In general, this method guarantees that the focal plane will
-  // be set to the nearest supported focal distance.
-  virtual void SetFocalPlane(float focal_plane) = 0;
-
   // Sets the state of the virtual camera's lens cap. If the lens cap is on,
   // then all calls to GetSensorData() will return data for a "dark frame".
   // Note that dark frame data will still have noise and sensor defect
@@ -107,24 +86,28 @@ class CameraSensor {
   virtual std::unique_ptr<Image<RgbPixel>> GetPerfectImage(
       int left, int top, int width, int height) const = 0;
 
-  // Returns a 2D array corresponding the raw output of the sensor. @left, @top,
+  // Returns a 2D array corresponding to the raw output of the sensor. @left, @top,
   // @width, and @height specify a crop window of pixels to access, and the size
   // of the resulting CameraSensorData structure is the size of this crop window
   // (not necessarily the size of the sensor).
   virtual std::unique_ptr<CameraSensorData<T>> GetSensorData(
       int left, int top, int width, int height) const = 0;
+
+  // Returns a vector of 2D arrays corresponding to a burst of readouts from
+  // the raw sensor output. @left, @top, @width, and @height specify a crop window
+  // of pixels to access, and the size of the resulting CameraSensorData structure
+  // is the size of this crop window (not necessarily the size of the sensor). 
+  virtual std::vector<std::unique_ptr<CameraSensorData<T>>> GetBurstSensorData(
+      int left, int top, int width, int height) const = 0;
 };
 
 // An implementation of the CameraSensor interface which provides sensor data
-// obtained as a set of raw images with associated focal depths. If an image at
-// focal depth f is requested, then the returned data will be that of the image
-// corresponding to the nearest focal depth.
+// obtained as a set of raw images. 
 class CameraSensorImpl : public CameraSensor {
  public:
   using T = typename CameraSensor::T;
   struct SensorPlane {
     T* buffer;  // does not own.
-    float focal_plane = 0.f;
   };
   struct Opts {
     T dead_pixel_value = 10000.f;
@@ -146,15 +129,13 @@ class CameraSensorImpl : public CameraSensor {
   }
   int GetSensorWidth() const override { return width_; }
   int GetSensorHeight() const override { return height_; }
-  float GetFocalPlane() const override;
-  int GetMinFocalPlane() const override { return min_focal_plane_; }
-  int GetMaxFocalPlane() const override { return max_focal_plane_; }
   void SetLensCap(bool lens_cap) override { lens_cap_ = lens_cap; }
   void SetNoiseMagnitude(float mag) override { opts_.noise_magnitude = mag; }
-  void SetFocalPlane(float focal_plane) override;
   std::unique_ptr<Image<RgbPixel>> GetPerfectImage(
       int left, int top, int width, int height) const override;
   std::unique_ptr<CameraSensorData<T>> GetSensorData(
+      int left, int top, int width, int height) const override;
+  std::vector<std::unique_ptr<CameraSensorData<T>>> GetBurstSensorData(
       int left, int top, int width, int height) const override;
 
  private:
@@ -164,12 +145,8 @@ class CameraSensorImpl : public CameraSensor {
   const std::vector<SensorPlane> planes_;
   std::vector<Image<RgbPixel>*> perfect_images_;  // owns pointers.
   Opts opts_;
-  float min_focal_plane_ = 0.f;
-  float max_focal_plane_ = 0.f;
   bool lens_cap_ = false;
-  int active_sensor_plane_ = 0;  // start with first plane by default.
+  mutable int active_sensor_plane_ = 0;  // start with first plane by default.
   std::map<int, float> bright_lines_;
   std::set<std::array<int, 2>> dead_pixels_;
 };
-
-#endif  // CAMERA_SENSOR_HPP_

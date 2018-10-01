@@ -1,5 +1,4 @@
-#ifndef PIXEL_HPP_
-#define PIXEL_HPP_
+#pragma once
 
 #include <cmath>
 
@@ -96,5 +95,3 @@ struct FloatPixel {
 
 typedef Float3Pixel RgbPixel;
 typedef Float3Pixel YuvPixel;
-
-#endif  // PIXEL_HPP_

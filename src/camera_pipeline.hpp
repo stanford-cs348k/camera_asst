@@ -1,5 +1,4 @@
-#ifndef CAMERA_PIPELINE_HPP_
-#define CAMERA_PIPELINE_HPP_
+#pragma once
 
 #include <algorithm>
 #include <limits>
@@ -19,7 +18,6 @@ class CameraPipeline : public CameraPipelineInterface {
   using CameraPipelineInterface::sensor_;
 
   std::unique_ptr<Image<RgbPixel>> ProcessShot() const override;
-  void AutoFocus() override;
 
   // BEGIN: CS348K STUDENTS MODIFY THIS CODE
   //

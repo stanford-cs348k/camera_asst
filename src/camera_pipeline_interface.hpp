@@ -1,5 +1,4 @@
-#ifndef CAMERA_PIPELINE_INTERFACE_HPP_
-#define CAMERA_PIPELINE_INTERFACE_HPP_
+#pragma once
 
 #include <memory>
 #include "camera_sensor.hpp"
@@ -14,13 +13,11 @@ class CameraPipelineInterface {
   explicit CameraPipelineInterface(CameraSensor* sensor) : sensor_(sensor) {}
 
   // Takes a picture using the input sensor. The high-level process for "taking
-  // a picture" involves running an autofocus algorithm, followed by a general
-  // processing pass (demosaic, denoise, tone map, etc.). This high-level
-  // process is common for all implementations of CameraPipelineInterface;
-  // however, the specific autofocus algorithm (AutoFocus()) and processing
+  // a picture" involves a general processing pass (demosaic, denoise, tone map,
+  // color correction, etc.). This high-level process is common for all
+  // implementations of CameraPipelineInterface. however, the exact processing
   // algorithms (ProcessShot()) are defined by the specific implementation.
   std::unique_ptr<Image<RgbPixel>> TakePicture() {
-    AutoFocus();
     return ProcessShot();
   }
 
@@ -34,10 +31,4 @@ class CameraPipelineInterface {
   // Implementations of ProcessShot() should take the raw sensor data in
   // @raw_data and output a clean final image.
   virtual std::unique_ptr<Image<RgbPixel>> ProcessShot() const = 0;
-
-  // Implementations of AutoFocus() should select an optimal focus using data
-  // obtained from the input camera sensor.
-  virtual void AutoFocus() = 0;
 };
-
-#endif  // CAMERA_PIPELINE_INTERFACE_HPP_

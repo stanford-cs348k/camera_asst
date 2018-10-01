@@ -1,5 +1,4 @@
-#ifndef COMMON_HPP_
-#define COMMON_HPP_
+#pragma once
 
 #include <algorithm>
 #include <map>
@@ -67,5 +66,3 @@ class ArgParser {
  private:
   std::vector<std::string> args_;
 };
-
-#endif  // COMMON_HPP_

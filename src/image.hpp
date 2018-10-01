@@ -1,5 +1,4 @@
-#ifndef IMAGE_HPP_
-#define IMAGE_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -37,5 +36,3 @@ template<typename Pixel> class Image {
   const int height_;
   Pixel* const pixels_;
 };
-
-#endif  // IMAGE_HPP_

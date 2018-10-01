@@ -43,15 +43,3 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
 
   // END: CS348K STUDENTS MODIFY THIS CODE  
 }
-
-
-void CameraPipeline::AutoFocus() {
-    
-  // BEGIN: CS348K STUDENTS MODIFY THIS CODE  
-    
-  // your autofocus implementation should go here
-
-  sensor_->SetFocalPlane(0.f);
-  
-  // END: CS348K STUDENTS MODIFY THIS CODE  
-}
