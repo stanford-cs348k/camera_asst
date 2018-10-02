@@ -13,6 +13,11 @@ Grab the assignment starter code.
 
 To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/fall18content/asst/scenes.tgz>.
 
+For example, on the Linux SU myth machines:
+
+    wget http://cs348k.stanford.edu/fall18content/asst/scenes.tgz
+    tar -xvf scenes.tgz
+
 __Build Instructions__
 
 The codebase uses a simple `Makefile` as the build system. To build the starter code, run `make` from the top level directory. The assignment source code is in `src/`, and object files and binaries will be generated into `build/` and `bin/` respectively.
