@@ -39,9 +39,12 @@ You will need to do the following in this function:
 * Denoise the image and correct for any sensor defects (such as dead pixels that always read out as white).  You may use any techniques you wish.
 * Rescale the floating point pixel values to 8-bit integer values in the 0-255 range.  We recommend that you first do this by remapping the floating point range (0,1) to the range (0,255).  We'll address more intelligent forms of "tone mapping" in Part 2 of the assignment. 
 
+__Test scenes:__
+* Your primary test scenes are taken directly from Google's [HDR+ dataset](https://hdrplusdata.org/dataset.html). These scenes have been chosen to stress different aspects of real-world images. They are: `taxi.bin` (busy street scene with low-light), `hand.bin` (close-up shot with lots of texture), `church.bin` (high dynamic range), and `path.bin` (complex, high-resolution scene). For each of these scenes, we've provided a `SCENE_solution_part1.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
+* In addition, we've provided some helpful debugging scenes, such as: `black.bin` (an all black image), `gray.bin` (a 50% gray image, for which pixels without defects should be [128,128,128]), `stripe.bin` (a tough case for demosaicing), `color.bin`, and `stanford.bin`)
+
 __Tips:__
 
-* We've provided some helpful debbugging scenes, such as: `black.bin` (an all black image), `gray.bin` (a 50% gray image, for which pixels without defects should be [128,128,128]), `stripe.bin` (a tough case for demosaicing), `color.bin`, `stanford.bin`, and `sanmiguel.bin`)
 * You may implement this assignment in any way you wish.  Certainly, you will have to demosaic the image to recover RGB values. The techniques you employ for handling noise, bad pixels, defect pixels are up to you.
 * We guarantee that pixel defects (stuck pixels, pixels with extra sensitivity) are static defects that are the same for every photograph taken for a given scene.  Note that while the overall noise statistics of the sensor are the same per photograph, the perturbation of individual pixel values due to noise varies per photograph (that's the nature of noise!).
 * You may assume that RAW data read from the sensor is linear in incident light, and in the range [0, 1].
