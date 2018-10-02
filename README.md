@@ -77,7 +77,7 @@ __Pixel__ (in `Pixel.hpp`) is struct of convenience routines for 3-channel pixel
 
 __Tips__:
 
-* Most of the detail of the stater code has been abstracted away for you and effectively your entire implementation of RAW processing can go in to the `CameraPipeline::ProcessShot()` function.
+* Most of the detail of the starter code has been abstracted away for you and effectively your entire implementation of RAW processing can go in to the `CameraPipeline::ProcessShot()` function.
 * For the relevant classes, look at the `.hpp` files to understand the public API. 
 * If you are having trouble using some of the provided functionality, feel free to implement your own versions. We just ask that you do not modify existing classes, but add new ones if necessary.
 * The starter code makes heavy use of `std::unique_ptr`.  If you are not familiar with `std::unique_ptr`, see <https://shaharmike.com/cpp/unique-ptr/>. 
