@@ -23,9 +23,11 @@ void ReadBIN(const std::string& path, std::vector<CameraSensorImpl::SensorPlane>
   fread(&height, sizeof(height), 1, f);
   buffer = new T[num_planes * width * height];
   T* plane_buffer = buffer;
+  float focus;
   std::vector<float> perfect_image_buffer(width * height * 3);
   for (int i = 0; i < num_planes; i++) {
     planes[i].buffer = plane_buffer;
+    fread(&focus, sizeof(focus), 1, f);
     fread(plane_buffer, sizeof(T), width * height, f);
     plane_buffer += width * height;
     fread(&(perfect_image_buffer[0]), sizeof(float), width * height * 3, f);
