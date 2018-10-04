@@ -93,7 +93,7 @@ Phase 1 of the assigment will be graded on image quality. A reasonable implement
 
 ## Handin ##
 
-This assignment will be handed in using Canvas:
+This assignment will be handed in using Canvas:  <http://canvas.stanford.edu>
 
  * Please hand in `camera_pipeline.cpp`, `camera_pipeline.hpp`, We should be able to build and run the code on the myth machines by dropping these files into a freshly checked out starter code tree.
  * Please also include a short writeup describing the techniques you employed to implement demoasicing and image-quality problems caused by noise and sensor defects.
