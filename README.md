@@ -110,7 +110,7 @@ In building your solution to the first part of this assignment, you might have n
 ![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.png "Noise visualization")
 
 There's at least two issues you might notice here:
-1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that the parts of the image which don't receive as much illumination (e.g. the front parts of the taxis) are too dark to discern much detail. 
+1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that the parts of the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
 2. *Noise:* Because we are under-exposing, the effects of sensor noise are much more noticeable. In particular, the zoomed in region from the figure above shows how dominant the noise can become in dark regions.
 
 In this part of the assignment, you'll correct for under-exposure using a form of local tone mapping called **exposure fusion** and deal with noise using a simplified version of the **HDR+ align and merge** algorithm.
@@ -147,13 +147,13 @@ But first, why do we need this special alignment and merging step? What if we si
 
 ![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png "Average Denoising")
 
-The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images where captured at different points in time and so don't line up. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
+The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
 __Alignment:__
-1. Convert the stack of raw bayer images to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
+1. Convert the stack of raw bayer images from `GetBurstSensorData` to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
 2. Compute gaussian pyramids for each of these grayscale images (use your code from the exposure fusion sub-part).
-3. For each grayscale pyramid, perform a hierarchical alignment to the reference image (the first image in the burst) by following steps 4-6.
-4. For each level of the pyramid, starting at the coarsest:
+3. For each of the images in the burst, perform a hierarchical alignment to the reference image (the first image in the burst) by following steps 4-6.
+4. For each level of the gaussian pyramid, starting at the coarsest:
   5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
   6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
 
