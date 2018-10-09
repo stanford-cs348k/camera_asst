@@ -100,4 +100,77 @@ This assignment will be handed in using Canvas:
 
 # Part 2 (65 pts): Burst Mode Alignment for Denoising + Local Tone Mapping #
 
-Part 2 of the assignment will be released on Monday October 8th and be due on Monday October 22nd.
+__Note:__
+We've updated the scene assets to include images produced using our version of the alignment and tone mapping algorithms. You should redownload the `scenes.tgz` file if you'd like to compare against them.
+
+### Due Monday October 22nd, 11:59pm ###
+
+In building your solution to the first part of this assignment, you might have noticed a a few visually objectional artifacts in your output. Consider the `taxi.bin` image:
+
+![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.jpg "Noise visualization")
+
+There's at least two issues you might notice here:
+1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that the parts of the image which don't receive as much illumination (e.g. the front parts of the taxis) are too dark to discern much detail. 
+2. *Noise:* Because we are under-exposing, the effects of sensor noise are much more noticeable. In particular, the zoomed in region from the figure above shows how dominant the noise can become in dark regions.
+
+In this part of the assignment, you'll correct for under-exposure using a form of local tone mapping called **exposure fusion** and deal with noise using a simplified version of the **HDR+ align and merge** algorithm.
+
+## Local Tone Mapping
+
+For local tone mapping, you will implement a modified version of the [Exposure Fusion paper](http://ntp-0.cs.ucl.ac.uk/staff/j.kautz/publications/exposure_fusion.pdf) by Mertens et al. The key idea of exposure fusion is that, while it's very difficult to capture a single image where all parts of the image are well-exposed, it's possible to capture multiple exposures of the same image and then combine the well-exposed parts of each of these image to create a better image. 
+
+In order to use this algorithm to tone map a single image, we are going to artifically create images under different exposure settings using our single input image. In particular, we are going to use two exposures: dark, which is the original unmodified image, and bright, which we create by multiplying the original image by a scale factor. This is the same approach as taken in the HDR+ paper.
+
+Here's a sketch of the modified exposure fusion algorithm (you should read over the original paper to understand each step in more detail):
+1. Convert output image from Part 1 of the assignment into grayscale
+2. Create the two artifical exposure brackets from the grayscale images: dark and bright
+3. Using a weighting function of your choice (the Mertens paper suggests several), compute weights for both images
+4. Compute a laplacian pyramid of both images and a gaussian pyramid of both weights
+5. Blend the laplacian pyramids together using the gaussian pyramid of weights
+6. Extract the exposure fused image from the blended pyramid and return it
+
+For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
+![Exposure Fusion](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_figure.jpg "Exposure Fusion")
+
+White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
+
+This algorithm makes the image look much brigher in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
+![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.jpg "Exposure Fusion Zoom")
+
+By boosting the dark regions which are already prone to sensor noise, we have created even more objectional noise artifacts. Fortunately, burst mode alignment from the HDR+ paper exactly solves this problem and is the next sub-part of this assignment.
+
+## Burst Mode Alignment for Denoising
+
+In this sub-part of the assignment, you will write code to align and merge a burst of noisy images to produce a less noisy output image. The entry point to your code is the same as in the previous parts, but instead of calling `sensor_->GetSensorData`, you should call `sensor_->GetBurstSensorData`. This method reads a burst of RAW data from the sensor and returns it as a `std::vector` of bayered images. Your job is to implement a simplified version of the alignment and merging steps from the HDR+ paper to produce a denoised bayer image that can be processed by your existing camera pipeline code.
+
+But first, why do we need this special alignment and merging step? What if we simply denoised by averaging together our burst of images? Let's try it:
+
+![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.jpg "Average Denoising")
+
+The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images where captured at different points in time and so don't line up. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
+
+__Alignment:__
+1. Convert the stack of raw bayer images to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
+2. Compute gaussian pyramids for each of these grayscale images (use your code from the exposure fusion sub-part).
+3. For each grayscale pyramid, perform a hierarchical alignment to the reference image (the first image in the burst) by following steps 4-6.
+4. For each level of the pyramid, starting at the coarsest:
+  5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
+  6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
+
+__Merging:__
+The merging algorithm in the HDR+ paper.
+
+__Test scenes:__
+Your primary test scenes are a subset of the scenes in Part 1. Specifically: `taxi.bin`, `church.bin`, and `path.bin`. These secenes each have a burst of 3 images. For each of these scenes, we've provided a `SCENE_solution_part2.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
+
+__Tips:__
+
+* You may implement this assignment in any way you wish. We've provided a recommended sketch but feel free to improve upon our suggested algorithm.
+* Implement utilities for generating Gaussian and Laplacian pyramids first as they are wll be used in all parts of this assignment.
+
+## Handin ##
+
+This assignment will be handed in using Canvas:
+
+ * Please hand in `camera_pipeline.cpp`, `camera_pipeline.hpp`, We should be able to build and run the code on the myth machines by dropping these files into a freshly checked out starter code tree.
+ * Please also include a short writeup describing the algorithm you implemented for exposure fusion and burst denoising.
