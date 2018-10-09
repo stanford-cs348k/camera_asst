@@ -107,7 +107,7 @@ We've updated the scene assets to include images produced using our version of t
 
 In building your solution to the first part of this assignment, you might have noticed a a few visually objectional artifacts in your output. Consider the `taxi.bin` image:
 
-![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.jpg "Noise visualization")
+![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.png "Noise visualization")
 
 There's at least two issues you might notice here:
 1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that the parts of the image which don't receive as much illumination (e.g. the front parts of the taxis) are too dark to discern much detail. 
@@ -130,12 +130,12 @@ Here's a sketch of the modified exposure fusion algorithm (you should read over 
 6. Extract the exposure fused image from the blended pyramid and return it
 
 For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
-![Exposure Fusion](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_figure.jpg "Exposure Fusion")
+![Exposure Fusion](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_figure.png "Exposure Fusion")
 
 White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
 
 This algorithm makes the image look much brigher in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
-![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.jpg "Exposure Fusion Zoom")
+![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png "Exposure Fusion Zoom")
 
 By boosting the dark regions which are already prone to sensor noise, we have created even more objectional noise artifacts. Fortunately, burst mode alignment from the HDR+ paper exactly solves this problem and is the next sub-part of this assignment.
 
@@ -145,7 +145,7 @@ In this sub-part of the assignment, you will write code to align and merge a bur
 
 But first, why do we need this special alignment and merging step? What if we simply denoised by averaging together our burst of images? Let's try it:
 
-![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.jpg "Average Denoising")
+![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png "Average Denoising")
 
 The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images where captured at different points in time and so don't line up. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
