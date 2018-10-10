@@ -100,36 +100,48 @@ This assignment will be handed in using Canvas:
 
 # Part 2 (65 pts): Burst Mode Alignment for Denoising + Local Tone Mapping #
 
+### Due Monday October 22nd, 11:59pm ###
+
 __Note:__
 We've updated the scene assets from part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
 
-### Due Monday October 22nd, 11:59pm ###
-
-When implementing your solution to the first part of this assignment, you might have noticed a few visually objectional artifacts in your output. Consider the `taxi.bin` image:
+When implementing your solution to the first part of this assignment, you might have noticed visual artifacts in your output. Consider the `taxi.bin` image:
 
 ![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.png? "Noise visualization")
 
 There are at least two issues you might notice here:
-1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that regions of the the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
+1. *Under-exposure:* The scene exhibits high dynamic range, so to avoid over-exposing the bright sunset in the background, the image has been deliberately under-exposed. As a result, regions of the the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
 2. *Noise:* Because the image was under-exposed, the effects of sensor noise are much more noticeable. In particular, the zoomed in region from the figure above shows how dominant the noise can become in dark regions.
 
-In this part of the assignment, you'll correct for under-exposure using a form of local tone mapping called **exposure fusion** and deal with noise using a simplified version of the **HDR+ align and merge** algorithm.
+In this part of the assignment, you'll address high dynamic range using a local tone mapping algorithm called **exposure fusion**. Then you will reduce noise in the tone mapped output by **aligning and merging** a sequence of underexposed shots as discussed in [Burst Photography for High Dynamic Range and Low-light Imaging on Mobile Cameras](https://ai.google/research/pubs/pub45586).
 
-## Local Tone Mapping
+## Local Tone Mapping vis Exposure Fusion
 
-Tone mapping converts a high dynamic range image to a low dynamic range image (e.g., 8 bbits per pixel) that can be viewed on a (presumably low-dynamic range) display. 
+Tone mapping converts a high dynamic range image (with greater than 8 bits of information per channel) to a low dynamic range image (e.g., 8 bits per channel) that can be viewed on a low-dynamic range display.  In a local tone mapping algorithm, different parts of the image are exposed differently so that detail is retained in both very bright and dark regions.   
 
-For local tone mapping, you will implement a modified version of the [Exposure Fusion paper](http://ntp-0.cs.ucl.ac.uk/staff/j.kautz/publications/exposure_fusion.pdf) by Mertens et al. The key idea of exposure fusion is that, while it's very difficult to capture a single image where all parts of the image are well-exposed, it's possible to capture multiple exposures of the same image and then combine the well-exposed parts of each of these image to create a better image. 
+In this assignment, we'd like you to implement a modified version of [Exposure Fusion](http://ntp-0.cs.ucl.ac.uk/staff/j.kautz/publications/exposure_fusion.pdf) as described by Mertens et al. The key idea of exposure fusion is that, while it is difficult to capture a single image where all parts of the image are well-exposed, it's possible to capture multiple exposures of the same scene and then combine the well-exposed parts of each of these images to create a satisfying high dynamic range photo.
 
-In order to use this algorithm to tone map a single image, we are going to artifically create images under different exposure settings using our single input image. In particular, we are going to use two exposures: dark, which is the original unmodified image, and bright, which we create by multiplying the original image by a scale factor. This is similar to the approach taken in the HDR+ paper. The dark image will retain detail in the areas of the image with a lot of light (since it is under-exposed), while the bright image will retain detail in the areas with little light (since it is over-exposed).
+Recall that the pixel data you receive from the sensor via `GetSensorData()` is represented as a 32-bit floating point value between 0 and 1. (Even though the mantissa of a single-precision float number is 23 bits, the data is from Google HDR+'s dataset, acquired via a Pixel phone, so the actual precision of these values is about 10 bits.)  Rather than take multiple exposures with the camera as described in the paper, you'll first *virtually* create two 8-bit exposures from the high-precision input.  
 
-Here's a sketch of the modified exposure fusion algorithm (you should read over the original paper to understand each step in more detail):
+Your specific solution is allowed to differ (see further detail in the "Dynamic Range Compression" part of Section 6 of the HDR+ paper for heuristics), but one basic approach would create the following two virtual exposures after processing the data with your pipeliine from part 1 of the assignment (but before conversion to 8-bit values): 
+
+ * *dark*, which is a grayscale version of the RGB image after basic RAW processing.  (RGB to YUV conversion to get grayscale)
+ * *bright* is formed by multiplying dark by a scale factor.
+
+The dark image will retain detail in the areas of the image with a lot of light (since it is largely under-exposed), while the bright image will retain detail in the areas with little light (since the digital gain applied by the scale factor brightens dark parts of the image).
+
+Exposure fusion then computes a per-pixel weight that selects between the bright and dark images.  You can either see 
+Section 3.1 of Mertens et al. for example heuristics, or the much simpler version described in the "Dynamic Range Compression" part of Section 6 of the HDR+ paper.  The *Laplacian pyramids* of the dark and bright images (not initial image pixels) are blended together according to this weight. Last, the resulting Laplacian pyramid is flatted to get a merged grayscale image.
+
+This modified grayscale image is then combined with the UV channels of the original pre-tone mapped RGB image to get a modified result.  
+
+In summary, here's a sketch of the modified exposure fusion algorithm (you should read over the original paper to understand each step in more detail):
 1. Convert output image from Part 1 of the assignment into grayscale
 2. Create the two artifical exposure brackets from the grayscale images: dark and bright
 3. Using a weighting function of your choice (section 3.1 in the paper), compute weights for both images
-4. Compute a laplacian pyramid of both images and a gaussian pyramid of both weights
-5. Blend the laplacian pyramids together using the gaussian pyramid of weights (section 3.2 in the paper)
-6. Extract the exposure fused image from the blended pyramid and return it
+4. Compute a Laplacian pyramid of both images and a Gaussian pyramid of the weights
+5. Blend the Laplacian pyramids together using the Gaussian pyramid of weights (section 3.2 in the paper)
+6. Extract the exposure fused image from the blended pyramid (flatten the pyramid) and use this as the Y channel of the final output image.
 
 For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
 ![Exposure Fusion](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_figure.png? "Exposure Fusion")
@@ -139,32 +151,33 @@ White in the weight images represent a high value, and black represents a low va
 This algorithm makes the image look much brigher in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
 ![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png? "Exposure Fusion Zoom")
 
-By boosting the dark regions (which are already prone to sensor noise), we have created even more objectional noise artifacts. Fortunately, burst mode alignment from the HDR+ paper exactly solves this problem and is the next sub-part of this assignment.
+Notice that while this algorithm produces a result where there is detail in all regions, by boosting the dark regions (which are already prone to sensor noise), we have accentuated noise artifacts. Fortunately, burst mode alignment from the HDR+ paper solves this problem and is the next sub-part of this assignment.
 
 ## Burst Mode Alignment for Denoising
 
-In this sub-part of the assignment, you will write code to align and merge a burst of noisy images to produce a less noisy output image. The entry point to your code is the same as in the previous parts, but instead of calling `sensor_->GetSensorData`, you should call `sensor_->GetBurstSensorData`. This method reads a burst of RAW data from the sensor and returns it as a `std::vector` of bayered images. Your job is to implement a simplified version of the alignment and merging steps from the HDR+ paper to produce a denoised bayer image that can be processed by your existing camera pipeline code.
+In this sub-part of the assignment, you will write code to align and merge a burst of (potentially noisy) sensor captures to produce a less noisy output image. The entry point to your code is the same as in the previous parts, but instead of calling `sensor_->GetSensorData()`, you should call `sensor_->GetBurstSensorData()`. This method reads a burst of RAW data from the sensor and returns it as a `std::vector` of bayered images. Your job is to implement a simplified version of the alignment and merging steps from the HDR+ paper to produce a denoised bayer image that can be processed by your existing camera pipeline code. __Note: the align/merge algorithm is used to produce a new (higher bit depth) pre-demosaiced RAW image that should then be passes through the rest of your RAW processing pipeline (including local tone mapping).
 
-But first, why do we need this special alignment and merging step? What if we simply denoised by averaging together our burst of images? Let's try it:
+To illustrate why aligning the burst is necessary, consider the output of simply summing each capture in burst, as shown below:
 
 ![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png#1 "Average Denoising")
 
-The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
+The resulting image is ceertainly less noisy, since summation increases signal to noise ratio in dark regions.  However, the result is also now blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of a simple implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
-__Alignment (section 4 in the HDR+ paper):__
+__Alignment (Section 4 in the HDR+ paper):__
 The following is a suggestion for how to implement the alignment step:
-1. Convert the stack of raw bayer images from `GetBurstSensorData` to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
-2. Compute gaussian pyramids for each of these grayscale images (use your code from the exposure fusion sub-part).
+1. Convert the stack of raw bayer images from `GetBurstSensorData()` to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
+2. Compute Gaussian pyramids for each of these grayscale images (You should be able to use your code from the earlier exposure fusion part of the assignment.).
 3. For each of the images in the burst, perform a hierarchical alignment to the reference image (the first image in the burst) by following steps 4-6.
-4. For each level of the gaussian pyramid, starting at the coarsest:
+4. For each level of the Gaussian pyramid, starting at the coarsest:
 5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
 6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
 
-The paper mentions many other additional steps: subpixel alignment using an L2 metric, a robust upsampling strategy for the alignment fields, varying search radii, fourier transforms for fast matching, etc. These can certainly improve your alignment, and we encourage you to attempt to implement them, but they are not necessary to achieve a decent image for this assignment.
+The paper mentions many other additional steps: subpixel alignment using an L2 metric, a robust upsampling strategy for the alignment fields, varying search radii, Gourier transforms for fast matching, etc. These can certainly improve your alignment, and we encourage interested students to attempt to implement some of these more advanced techniques, but they are not necessary to achieve a reasonable output image for this assignment.
 
-__Merging (section 5 in the HDR+ paper):__
-The merging algorithm in the HDR+ paper uses an advanced noise model and operates in the frequency domain. We encourage you to implement the merging step in whichever way you choose, but provide here a sketch of a relatively simple implementation which will produce decent results:
-1. For overlapping tiles in the reference image (we use tiles of size 16 with stride 8): 
+__Merging (Section 5 in the HDR+ paper):__
+
+The merging algorithm in the HDR+ paper uses an advanced noise model and operates in the frequency domain. We encourage you to implement the merging step in whichever way you choose, but below we provide a sketch of a bbasic implementation which will produce decent results:
+1. For overlapping tiles in the reference image (Our reference uses tiles of size 16 with stride 8): 
 2. For each neighboring image, use the alignment offset to find the tile to merge.
 3. Compute a merging weight for the tile from step 2 by comparing that tile to the reference image tile. In our implementation, we use the distance metric from the alignment step to compute an initial weight and then clamp all values below some minimum to 1 (full weight) and all values above some maximum distance to 0 (no weight) in order to throw out bad tile alignments which would blur the image if merged.
 4. Merge the weighted neighboring image tile into the reference tile.
@@ -172,7 +185,7 @@ The merging algorithm in the HDR+ paper uses an advanced noise model and operate
 6. Repeat step 1-5 for all overlapping tiles in the reference image.
 7. Blend together the overlapping tiles using a raised cosine window (*Overlapped tiles* section in the paper).
 
-With the power of your fully operational camera pipeline implementation, you should see something like this:
+Now that your implementation can align/merge a burst of RAW images, and then apply exposure fusion to the result, you should obtain a result that looks something like this (obviously results will vary based on algorithms used):
 
 ![Full Pipeline](http://cs348k.stanford.edu/fall18content/asst/taxi_merge_exposure_zoom_figure.png? "Full Pipeline")
 
@@ -181,8 +194,13 @@ Your primary test scenes are a subset of the scenes in Part 1. Specifically: `ta
 
 __Tips:__
 
-* You may implement this assignment in any way you wish. We've provided a recommended sketch but feel free to improve upon our suggested algorithm.
-* Implement utilities for generating Gaussian and Laplacian pyramids first as they will be used in all parts of this assignment.
+* You may implement this assignment in any way you wish. We've provided a recommended sketch of the basic algorithms, but feel free to improve upon our suggested algorithm.  (The algorithms described in the reference readings are certainly more advanced than the baseline approaches described here.)
+* Implement utility functions for generating Gaussian and Laplacian pyramids first, as they will be used in all parts of this assignment.
+
+## Grading ##
+
+Like part 1, part 2 of the assigment will be graded on image quality. Your implementation should contain an approach for aligning/merging images in a burst, and a valid implementation of exposure fusion.  You may adjust/improve algorithms however you seek.  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.  
+
 
 ## Handin ##
 
