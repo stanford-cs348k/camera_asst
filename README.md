@@ -1,4 +1,4 @@
-# CS348K Assignment: Camera RAW Processing #
+# CS348K Assignment: Camera RAW Processing Pipeline #
 
 In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two phases:
 
@@ -101,21 +101,23 @@ This assignment will be handed in using Canvas:
 # Part 2 (65 pts): Burst Mode Alignment for Denoising + Local Tone Mapping #
 
 __Note:__
-We've updated the scene assets to include images produced using our version of the alignment and tone mapping algorithms. You should redownload the `scenes.tgz` file if you'd like to compare against them.
+We've updated the scene assets from part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
 
 ### Due Monday October 22nd, 11:59pm ###
 
-In building your solution to the first part of this assignment, you might have noticed a a few visually objectional artifacts in your output. Consider the `taxi.bin` image:
+When implementing your solution to the first part of this assignment, you might have noticed a few visually objectional artifacts in your output. Consider the `taxi.bin` image:
 
 ![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.png? "Noise visualization")
 
-There's at least two issues you might notice here:
-1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that the parts of the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
-2. *Noise:* Because we are under-exposing, the effects of sensor noise are much more noticeable. In particular, the zoomed in region from the figure above shows how dominant the noise can become in dark regions.
+There are at least two issues you might notice here:
+1. *Under-exposure:* To avoid over-exposing the bright sunset in the background, this image has been deliberately under-exposed. However, this means that regions of the the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
+2. *Noise:* Because the image was under-exposed, the effects of sensor noise are much more noticeable. In particular, the zoomed in region from the figure above shows how dominant the noise can become in dark regions.
 
 In this part of the assignment, you'll correct for under-exposure using a form of local tone mapping called **exposure fusion** and deal with noise using a simplified version of the **HDR+ align and merge** algorithm.
 
 ## Local Tone Mapping
+
+Tone mapping converts a high dynamic range image to a low dynamic range image (e.g., 8 bbits per pixel) that can be viewed on a (presumably low-dynamic range) display. 
 
 For local tone mapping, you will implement a modified version of the [Exposure Fusion paper](http://ntp-0.cs.ucl.ac.uk/staff/j.kautz/publications/exposure_fusion.pdf) by Mertens et al. The key idea of exposure fusion is that, while it's very difficult to capture a single image where all parts of the image are well-exposed, it's possible to capture multiple exposures of the same image and then combine the well-exposed parts of each of these image to create a better image. 
 
