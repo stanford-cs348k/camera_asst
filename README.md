@@ -115,7 +115,7 @@ There are at least two issues you might notice here:
 
 In this part of the assignment, you'll address high dynamic range using a local tone mapping algorithm called **exposure fusion**. Then you will reduce noise in the tone mapped output by **aligning and merging** a sequence of underexposed shots as discussed in [Burst Photography for High Dynamic Range and Low-light Imaging on Mobile Cameras](https://ai.google/research/pubs/pub45586).
 
-## Local Tone Mapping vis Exposure Fusion
+## Local Tone Mapping via Exposure Fusion
 
 Tone mapping converts a high dynamic range image (with greater than 8 bits of information per channel) to a low dynamic range image (e.g., 8 bits per channel) that can be viewed on a low-dynamic range display.  In a local tone mapping algorithm, different parts of the image are exposed differently so that detail is retained in both very bright and dark regions.   
 
@@ -153,7 +153,7 @@ This algorithm makes the image look much brighter in the dark regions without bl
 
 Notice that while this algorithm produces a result where there is detail in all regions, by boosting the dark regions (which are already prone to sensor noise), we have accentuated noise artifacts. Fortunately, burst mode alignment from the HDR+ paper solves this problem and is the next sub-part of this assignment.
 
-## Burst Mode Alignment for Denoising
+## Reducing Noise by Aligning an Image Burst
 
 In this sub-part of the assignment, you will write code to align and merge a burst of (potentially noisy) sensor captures to produce a less noisy output image. The entry point to your code is the same as in the previous parts, but instead of calling `sensor_->GetSensorData()`, you should call `sensor_->GetBurstSensorData()`. This method reads a burst of RAW data from the sensor and returns it as a `std::vector` of bayered images. Your job is to implement a simplified version of the alignment and merging steps from the HDR+ paper to produce a denoised bayer image that can be processed by your existing camera pipeline code. __Note: the align/merge algorithm is used to produce a new (higher bit depth) pre-demosaiced RAW image that should then be passes through the rest of your RAW processing pipeline (including local tone mapping).
 
