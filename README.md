@@ -148,6 +148,8 @@ For example, here's our reference pipeline's dark and bright images with their c
 
 White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
 
+__Note__: Be careful about whether you perform local tone mapping operations in linear intensity space (on luminance) or in a non-linear perceptual space (luma). The role of local tone mapping is to mimic how a human would perceive a scene if they were there in person. If we are using heuristics to select the exposure of different parts of the scene based on what we think would look good to a human, does it make more sense to apply these heuristics on luminance or luma values? How do you convert from luminance to luma?  How does one convert luma back to luminance?
+
 This algorithm makes the image look much brighter in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
 ![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png? "Exposure Fusion Zoom")
 
