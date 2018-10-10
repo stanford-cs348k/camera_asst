@@ -180,7 +180,7 @@ Your primary test scenes are a subset of the scenes in Part 1. Specifically: `ta
 __Tips:__
 
 * You may implement this assignment in any way you wish. We've provided a recommended sketch but feel free to improve upon our suggested algorithm.
-* Implement utilities for generating Gaussian and Laplacian pyramids first as they are wll be used in all parts of this assignment.
+* Implement utilities for generating Gaussian and Laplacian pyramids first as they will be used in all parts of this assignment.
 
 ## Handin ##
 
