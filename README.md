@@ -119,14 +119,14 @@ In this part of the assignment, you'll correct for under-exposure using a form o
 
 For local tone mapping, you will implement a modified version of the [Exposure Fusion paper](http://ntp-0.cs.ucl.ac.uk/staff/j.kautz/publications/exposure_fusion.pdf) by Mertens et al. The key idea of exposure fusion is that, while it's very difficult to capture a single image where all parts of the image are well-exposed, it's possible to capture multiple exposures of the same image and then combine the well-exposed parts of each of these image to create a better image. 
 
-In order to use this algorithm to tone map a single image, we are going to artifically create images under different exposure settings using our single input image. In particular, we are going to use two exposures: dark, which is the original unmodified image, and bright, which we create by multiplying the original image by a scale factor. This is the same approach as taken in the HDR+ paper.
+In order to use this algorithm to tone map a single image, we are going to artifically create images under different exposure settings using our single input image. In particular, we are going to use two exposures: dark, which is the original unmodified image, and bright, which we create by multiplying the original image by a scale factor. This is similar to the approach taken in the HDR+ paper. The dark image will retain detail in the areas of the image with a lot of light (since it is under-exposed), while the bright image will retain detail in the areas with little light (since it is over-exposed).
 
 Here's a sketch of the modified exposure fusion algorithm (you should read over the original paper to understand each step in more detail):
 1. Convert output image from Part 1 of the assignment into grayscale
 2. Create the two artifical exposure brackets from the grayscale images: dark and bright
-3. Using a weighting function of your choice (the Mertens paper suggests several), compute weights for both images
+3. Using a weighting function of your choice (section 3.1 in the paper), compute weights for both images
 4. Compute a laplacian pyramid of both images and a gaussian pyramid of both weights
-5. Blend the laplacian pyramids together using the gaussian pyramid of weights
+5. Blend the laplacian pyramids together using the gaussian pyramid of weights (section 3.2 in the paper)
 6. Extract the exposure fused image from the blended pyramid and return it
 
 For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
@@ -137,7 +137,7 @@ White in the weight images represent a high value, and black represents a low va
 This algorithm makes the image look much brigher in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
 ![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png "Exposure Fusion Zoom")
 
-By boosting the dark regions which are already prone to sensor noise, we have created even more objectional noise artifacts. Fortunately, burst mode alignment from the HDR+ paper exactly solves this problem and is the next sub-part of this assignment.
+By boosting the dark regions (which are already prone to sensor noise), we have created even more objectional noise artifacts. Fortunately, burst mode alignment from the HDR+ paper exactly solves this problem and is the next sub-part of this assignment.
 
 ## Burst Mode Alignment for Denoising
 
@@ -149,16 +149,30 @@ But first, why do we need this special alignment and merging step? What if we si
 
 The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
-__Alignment:__
+__Alignment (section 4 in the HDR+ paper):__
+The following is a suggestion for how to implement the alignment step:
 1. Convert the stack of raw bayer images from `GetBurstSensorData` to grayscale by averaging together every 2x2 bayer grid (effectively downsampling by 2x).
 2. Compute gaussian pyramids for each of these grayscale images (use your code from the exposure fusion sub-part).
 3. For each of the images in the burst, perform a hierarchical alignment to the reference image (the first image in the burst) by following steps 4-6.
 4. For each level of the gaussian pyramid, starting at the coarsest:
-  5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
-  6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
+5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
+6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
 
-__Merging:__
-The merging algorithm in the HDR+ paper.
+The paper mentions many other additional steps: subpixel alignment using an L2 metric, a robust upsampling strategy for the alignment fields, varying search radii, fourier transforms for fast matching, etc. These can certainly improve your alignment, and we encourage you to attempt to implement them, but they are not necessary to achieve a decent image for this assignment.
+
+__Merging (section 5 in the HDR+ paper):__
+The merging algorithm in the HDR+ paper uses an advanced noise model and operates in the frequency domain. We encourage you to implement the merging step in whichever way you choose, but provide here a sketch of a relatively simple implementation which will produce decent results:
+1. For overlapping tiles in the reference image (we use tiles of size 16 with stride 8): 
+2. For each neighboring image, use the alignment offset to find the tile to merge.
+3. Compute a merging weight for the tile from step 2 by comparing that tile to the reference image tile. In our implementation, we use the distance metric from the alignment step to compute an initial weight and then clamp all values below some minimum to 1 (full weight) and all values above some maximum distance to 0 (no weight) in order to throw out bad tile alignments which would blur the image if merged.
+4. Merge the weighted neighboring image tile into the reference tile.
+5. Repeat step 2-4 for all neighboring images.
+6. Repeat step 1-5 for all overlapping tiles in the reference image.
+7. Blend together the overlapping tiles using a raised cosine window (*Overlapped tiles* section in the paper).
+
+With the power of your fully operational camera pipeline implementation, you should see something like this:
+
+![Full Pipeline](http://cs348k.stanford.edu/fall18content/asst/taxi_merge_exposure_zoom_figure.png "Full Pipeline")
 
 __Test scenes:__
 Your primary test scenes are a subset of the scenes in Part 1. Specifically: `taxi.bin`, `church.bin`, and `path.bin`. These secenes each have a burst of 3 images. For each of these scenes, we've provided a `SCENE_solution_part2.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
