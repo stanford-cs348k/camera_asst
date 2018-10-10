@@ -1,9 +1,9 @@
 # CS348K Assignment: Camera RAW Processing Pipeline #
 
-In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two phases:
+In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two parts, with two separate handins.
 
- * Phase 1, you'll process a single RAW image to demoaisc the image and correct for sensor defects.
- * Phase 2, you'll extend your implementation to process a burst of images from a scene featuring a wide range of intensities.  You'll align and merge the images of the burst to reduce noise, and then perform local tone mapping to produce a compelling HDR result.  
+ * In part 1, you'll process a single RAW image to demoaisc the image and correct for sensor defects.
+ * In part 2, you'll extend your implementation to process a burst of images from a scene featuring a wide range of intensities.  You'll align and merge the images of the burst to reduce noise, and then perform local tone mapping to produce a compelling HDR result.  Part 2 involves more implementation effort than part 1.
 
 ## Getting Started ##
 
@@ -89,7 +89,7 @@ __Tips__:
 
 ## Grading ##
 
-Phase 1 of the assigment will be graded on image quality. A reasonable implementation will address the challenges of demosaicing sensor output, correcting pixel defects and removing noise.  We don't have a numeric definition of good since there is no precise right answer here... it's a photograph, you'll know a reasonably looking one when you see it!  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.
+Part 1 of the assignment will be graded on image quality. A reasonable implementation will address the challenges of demosaicing sensor output, correcting pixel defects and removing noise.  We don't have a numeric definition of good since there is no precise right answer here... it's a photograph, you'll know a reasonably looking one when you see it!  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.
 
 ## Handin ##
 
@@ -103,7 +103,7 @@ This assignment will be handed in using Canvas:
 ### Due Monday October 22nd, 11:59pm ###
 
 __Note:__
-We've updated the scene assets from part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
+We've updated the scene assets from Part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
 
 When implementing your solution to the first part of this assignment, you might have noticed visual artifacts in your output. Consider the `taxi.bin` image:
 
@@ -123,7 +123,7 @@ In this assignment, we'd like you to implement a modified version of [Exposure F
 
 Recall that the pixel data you receive from the sensor via `GetSensorData()` is represented as a 32-bit floating point value between 0 and 1. (Even though the mantissa of a single-precision float number is 23 bits, the data is from Google HDR+'s dataset, acquired via a Pixel phone, so the actual precision of these values is about 10 bits.)  Rather than take multiple exposures with the camera as described in the paper, you'll first *virtually* create two 8-bit exposures from the high-precision input.  
 
-Your specific solution is allowed to differ (see further detail in the "Dynamic Range Compression" part of Section 6 of the HDR+ paper for heuristics), but one basic approach would create the following two virtual exposures after processing the data with your pipeliine from part 1 of the assignment (but before conversion to 8-bit values): 
+Your specific solution is allowed to differ (see further detail in the "Dynamic Range Compression" part of Section 6 of the HDR+ paper for heuristics), but one basic approach would create the following two virtual exposures after processing the data with your pipeline from part 1 of the assignment (but before conversion to 8-bit values): 
 
  * *dark*, which is a grayscale version of the RGB image after basic RAW processing.  (RGB to YUV conversion to get grayscale)
  * *bright* is formed by multiplying dark by a scale factor.
@@ -148,7 +148,7 @@ For example, here's our reference pipeline's dark and bright images with their c
 
 White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
 
-This algorithm makes the image look much brigher in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
+This algorithm makes the image look much brighter in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
 ![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png? "Exposure Fusion Zoom")
 
 Notice that while this algorithm produces a result where there is detail in all regions, by boosting the dark regions (which are already prone to sensor noise), we have accentuated noise artifacts. Fortunately, burst mode alignment from the HDR+ paper solves this problem and is the next sub-part of this assignment.
@@ -161,7 +161,7 @@ To illustrate why aligning the burst is necessary, consider the output of simply
 
 ![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png#1 "Average Denoising")
 
-The resulting image is ceertainly less noisy, since summation increases signal to noise ratio in dark regions.  However, the result is also now blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of a simple implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
+The resulting image is certainly less noisy, since summation increases signal to noise ratio in dark regions.  However, the result is also now blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of a simple implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
 __Alignment (Section 4 in the HDR+ paper):__
 The following is a suggestion for how to implement the alignment step:
@@ -176,7 +176,7 @@ The paper mentions many other additional steps: subpixel alignment using an L2 m
 
 __Merging (Section 5 in the HDR+ paper):__
 
-The merging algorithm in the HDR+ paper uses an advanced noise model and operates in the frequency domain. We encourage you to implement the merging step in whichever way you choose, but below we provide a sketch of a bbasic implementation which will produce decent results:
+The merging algorithm in the HDR+ paper uses an advanced noise model and operates in the frequency domain. We encourage you to implement the merging step in whichever way you choose, but below we provide a sketch of a basic implementation which will produce decent results:
 1. For overlapping tiles in the reference image (Our reference uses tiles of size 16 with stride 8): 
 2. For each neighboring image, use the alignment offset to find the tile to merge.
 3. Compute a merging weight for the tile from step 2 by comparing that tile to the reference image tile. In our implementation, we use the distance metric from the alignment step to compute an initial weight and then clamp all values below some minimum to 1 (full weight) and all values above some maximum distance to 0 (no weight) in order to throw out bad tile alignments which would blur the image if merged.
@@ -190,7 +190,7 @@ Now that your implementation can align/merge a burst of RAW images, and then app
 ![Full Pipeline](http://cs348k.stanford.edu/fall18content/asst/taxi_merge_exposure_zoom_figure.png? "Full Pipeline")
 
 __Test scenes:__
-Your primary test scenes are a subset of the scenes in Part 1. Specifically: `taxi.bin`, `church.bin`, and `path.bin`. These secenes each have a burst of 3 images. For each of these scenes, we've provided a `SCENE_solution_part2.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
+Your primary test scenes are a subset of the scenes in Part 1. Specifically: `taxi.bin`, `church.bin`, and `path.bin`. These scenes each have a burst of 3 images. For each of these scenes, we've provided a `SCENE_solution_part2.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
 
 __Tips:__
 
@@ -199,7 +199,7 @@ __Tips:__
 
 ## Grading ##
 
-Like part 1, part 2 of the assigment will be graded on image quality. Your implementation should contain an approach for aligning/merging images in a burst, and a valid implementation of exposure fusion.  You may adjust/improve algorithms however you seek.  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.  
+Like Part 1, Part 2 of the assignment will be graded on image quality. Your implementation should contain an approach for aligning/merging images in a burst, and a valid implementation of exposure fusion.  You may adjust/improve algorithms however you seek.  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.  
 
 
 ## Handin ##
