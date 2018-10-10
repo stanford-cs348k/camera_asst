@@ -145,7 +145,7 @@ In this sub-part of the assignment, you will write code to align and merge a bur
 
 But first, why do we need this special alignment and merging step? What if we simply denoised by averaging together our burst of images? Let's try it:
 
-![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png? "Average Denoising")
+![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png#1 "Average Denoising")
 
 The resulting image is absolutely less noisy, since by averaging images together the noise cancels itself out, but it is also very blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of an implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
