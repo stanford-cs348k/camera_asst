@@ -174,7 +174,7 @@ The following is a suggestion for how to implement the alignment step:
 5. For each tile of the reference image at this level, find the closest matching tile in the image that is being matched against (we use the absolute difference between the tiles as a measure of distance)
 6. Upsample the offsets to the next level and repeat step 5 using the upsampled offsets as starting points for the next search
 
-The paper mentions many other additional steps: subpixel alignment using an L2 metric, a robust upsampling strategy for the alignment fields, varying search radii, Gourier transforms for fast matching, etc. These can certainly improve your alignment, and we encourage interested students to attempt to implement some of these more advanced techniques, but they are not necessary to achieve a reasonable output image for this assignment.
+The paper mentions many other additional steps: subpixel alignment using an L2 metric, a robust upsampling strategy for the alignment fields, varying search radii, Fourier transforms for fast matching, etc. These can certainly improve your alignment, and we encourage interested students to attempt to implement some of these more advanced techniques, but they are not necessary to achieve a reasonable output image for this assignment.
 
 __Merging (Section 5 in the HDR+ paper):__
 
