@@ -1,4 +1,4 @@
-# CS348K Assignment: Camera RAW Processing Pipeline #
+# CS348K Assignment: Bust Mode Camera RAW Processing Pipeline #
 
 In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two parts, with two separate handins.
 
