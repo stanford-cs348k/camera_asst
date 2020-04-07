@@ -32,9 +32,7 @@ Now you can run the camera. Just run:
 
  ![RAW Example](http://cs348k.stanford.edu/fall18content/asst/taxi_figure.jpg "RAW Data visualization")
 
-## Part 1 (35 points) ##
-
-### Due Monday October 8th, 11:59pm ###
+## Part 1 (30 points) ##
 
 In the first part of the assignment you must process the raw image data to produce an RGB image that, simply put, looks as good as you can make it. The entry point to your code should be `CameraPipeline::ProcessShot()` in `camera_pipeline.cpp`.  This method reads RAW data from the sensor, and outputs an RGB image.
 
@@ -98,9 +96,7 @@ This assignment will be handed in using Canvas:  <http://canvas.stanford.edu>
  * Please hand in `camera_pipeline.cpp`, `camera_pipeline.hpp`, We should be able to build and run the code on the myth machines by dropping these files into a freshly checked out starter code tree.
  * Please also include a short writeup describing the techniques you employed to implement demoasicing and image-quality problems caused by noise and sensor defects.
 
-# Part 2 (65 pts): Burst Mode Alignment for Denoising + Local Tone Mapping #
-
-### Due Monday October 22nd, 11:59pm ###
+# Part 2 (70 points): Burst Mode Alignment for Denoising + Local Tone Mapping #
 
 __Note:__
 We've updated the scene assets from Part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
