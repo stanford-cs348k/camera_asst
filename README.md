@@ -1,6 +1,6 @@
 # Stanford CS348K Assignment: A Burst-Mode Camera RAW Processing Pipeline #
 
-In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two parts, with two separate handins.
+In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two parts.
 
  * In part 1, you'll process a single RAW image to demoaisc the image and correct for sensor defects.
  * In part 2, you'll extend your implementation to process a burst of images from a scene featuring a wide range of intensities.  You'll align and merge the images of the burst to reduce noise, and then perform local tone mapping to produce a compelling HDR result.  Part 2 involves more implementation effort than part 1.
@@ -21,6 +21,8 @@ For example, on the Linux SU myth machines:
 __Build Instructions__
 
 The codebase uses a simple `Makefile` as the build system. To build the starter code, run `make` from the top level directory. The assignment source code is in `src/`, and object files and binaries will be generated into `build/` and `bin/` respectively.
+
+For those who choose to implement their pipeline in Halide the Makefile includes a flag, USE_HALIDE, and HALIDE_PATH to include Halide in the build settings.
 
 __Running the starter code:__
 
@@ -85,21 +87,7 @@ __Tips__:
 * If you are having trouble using some of the provided functionality, feel free to implement your own versions. We just ask that you do not modify existing classes, but add new ones if necessary.
 * The starter code makes heavy use of `std::unique_ptr`.  If you are not familiar with `std::unique_ptr`, see <https://shaharmike.com/cpp/unique-ptr/>. 
 
-## Grading ##
-
-Part 1 of the assignment will be graded on image quality. A reasonable implementation will address the challenges of demosaicing sensor output, correcting pixel defects and removing noise.  We don't have a numeric definition of good since there is no precise right answer here... it's a photograph, you'll know a reasonably looking one when you see it!  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.
-
-## Handin ##
-
-This assignment will be handed in using Canvas:  <http://canvas.stanford.edu>
-
- * Please hand in `camera_pipeline.cpp`, `camera_pipeline.hpp`, We should be able to build and run the code on the myth machines by dropping these files into a freshly checked out starter code tree.
- * Please also include a short writeup describing the techniques you employed to implement demoasicing and image-quality problems caused by noise and sensor defects.
-
 # Part 2 (70 points): Burst Mode Alignment for Denoising + Local Tone Mapping #
-
-__Note:__
-We've updated the scene assets from Part 1 to include reference images produced using a simple reference implementation of the alignment and tone mapping algorithms you will implement in this part of the assignment. You should redownload the `scenes.tgz` file if you'd like to compare against these references. (Note: the reference solutions involve a basic implementation of the required techniques.  Motivated students will certainly be able to do better.)
 
 When implementing your solution to the first part of this assignment, you might have noticed visual artifacts in your output. Consider the `taxi.bin` image:
 
@@ -197,8 +185,7 @@ __Tips:__
 
 ## Grading ##
 
-Like Part 1, Part 2 of the assignment will be graded on image quality. Your implementation should contain an approach for aligning/merging images in a burst, and a valid implementation of exposure fusion.  You may adjust/improve algorithms however you seek.  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.  
-
+The assignment will be graded on image quality. Your implementation should contain an approach for demosaicing, correcting sensor defects / noise, aligning/merging images in a burst, and a valid implementation of exposure fusion.  You may adjust/improve algorithms however you seek.  We encourage you to start with simple algorithms, get them to work, and then if there is time, attempt to improve image quality to move to more advanced techniques.  
 
 ## Handin ##
 
