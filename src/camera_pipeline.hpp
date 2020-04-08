@@ -7,6 +7,12 @@
 #include "image.hpp"
 #include "pixel.hpp"
 
+#ifdef __USE_HALIDE__
+#include "Halide.h"
+#include "halide_utils.hpp"
+#endif
+
+
 class CameraPipeline : public CameraPipelineInterface {
  public:
     

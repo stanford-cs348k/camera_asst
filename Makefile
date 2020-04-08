@@ -1,4 +1,3 @@
-USE_HALIDE := True
 HALIDE_PATH := /Users/dillon/CppWorkspace/Halide/
 HALIDE_BIN_PATH := $(HALIDE_PATH)/bin
 HALIDE_INCLUDE_PATH := $(HALIDE_PATH)/include
@@ -13,7 +12,7 @@ LDFLAGS :=
 CPPFLAGS := 
 CXXFLAGS := -std=c++17
 
-ifeq ($(USE_HALIDE), True)
+ifeq ($(USE_HALIDE), 1)
  CXXFLAGS += -D__USE_HALIDE__	-I$(HALIDE_INCLUDE_PATH)
  LDFLAGS += -L$(HALIDE_BIN_PATH) -lHalide -lpthread -ldl
 endif
