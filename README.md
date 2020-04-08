@@ -24,6 +24,11 @@ The codebase uses a simple `Makefile` as the build system. To build the starter 
 
 For those who choose to implement their pipeline in Halide the Makefile includes a flag, USE_HALIDE, and HALIDE_PATH to include Halide in the build settings.
 
+You have the option of implementing this assignment either in ordinary C++ or in Halide <https://github.com/halide/Halide>, a C++ embedded DSL for image processing and machine learning.
+We have provided stubs of the pipeline for both vanilla C++ and Halide.
+
+To use Halide you will need to install the Halide code base from the link <https://github.com/halide/Halide>, set `USE_HALIDE=1`, and change the Makefile variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
+
 __Running the starter code:__
 
 Now you can run the camera. Just run:
@@ -68,7 +73,7 @@ Much of the scaffolding code (reading and writing data, storing images, etc.) is
 Only two files contain such regions:
 * `camera_pipeline.hpp` and `camera_pipeline.cpp` where you can customize the `CameraPipeline` class (while maintaining the same API), and implement the camera pipeline itself.
 
-The driver code for this assignment (containing `main()`) is located in `camera_main.cpp`.
+The driver code for this assignment (containing `main()`) is located in `camera_main.cpp`. Students who choose to use Halide for this assignment will find some Halide helper functions for loading and storing data in `./src/halide_utils.hpp`.
 
 __CameraSensor__ is a class which presents the same interface as a real camera sensor. It has methods like `SetLensCap()` and `GetSensorData()`.  From inside `CameraPipeline` class you can access the sensor via the local member variable `sensor_`.
 

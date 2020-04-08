@@ -1,4 +1,4 @@
-HALIDE_PATH := /Users/dillon/CppWorkspace/Halide/
+HALIDE_PATH ?= /Users/dillon/CppWorkspace/Halide/
 HALIDE_BIN_PATH := $(HALIDE_PATH)/bin
 HALIDE_INCLUDE_PATH := $(HALIDE_PATH)/include
 
