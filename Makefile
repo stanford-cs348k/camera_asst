@@ -1,8 +1,6 @@
-HALIDE_PATH ?= /Users/dillon/CppWorkspace/Halide/
 HALIDE_BIN_PATH := $(HALIDE_PATH)/bin
 HALIDE_INCLUDE_PATH := $(HALIDE_PATH)/include
 
-CXX := /Users/dillon/Downloads/clang+llvm-9.0.0-x86_64-darwin-apple/bin/clang++
 SRC_DIR := src
 BUILD_DIR := build
 BIN_DIR := bin

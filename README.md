@@ -22,12 +22,10 @@ __Build Instructions__
 
 The codebase uses a simple `Makefile` as the build system. To build the starter code, run `make` from the top level directory. The assignment source code is in `src/`, and object files and binaries will be generated into `build/` and `bin/` respectively.
 
-For those who choose to implement their pipeline in Halide the Makefile includes a flag, USE_HALIDE, and HALIDE_PATH to include Halide in the build settings.
-
 You have the option of implementing this assignment either in ordinary C++ or in Halide <https://github.com/halide/Halide>, a C++ embedded DSL for image processing and machine learning.
 We have provided stubs of the pipeline for both vanilla C++ and Halide.
 
-To use Halide you will need to install the Halide code base from the link <https://github.com/halide/Halide>, set `USE_HALIDE=1`, and change the Makefile variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
+To use Halide you will need to install the Halide code base from the link <https://github.com/halide/Halide>, set `USE_HALIDE=1` and set `HALIDE_PATH` to point to the Halide source code directory on your machine.
 
 __Running the starter code:__
 
