@@ -6,6 +6,31 @@
 
 #include "camera_pipeline.hpp"
 
+#ifdef __USE_HALIDE__
+
+std::unique_ptr<Image<RgbPixel>> rgbImageFromHalide(Halide::Buffer<float>& output) {
+  std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(output.width(), output.height()));
+
+  for (int row = 0; row < output.height(); row++) {
+    for (int col = 0; col < output.width(); col++) {
+
+      // Note: Halide uses the col, row, channel convention
+      float r = output(col, row, 0);
+      float g = output(col, row, 1);
+      float b = output(col, row, 2);
+
+      auto& pixel = (*image)(row, col);
+      pixel.r = r;
+      pixel.g = g;
+      pixel.b = b;
+    }
+  }
+
+  return image;
+}
+
+#endif
+
 std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   // In this function you should implement your full RAW image processing pipeline.
   //   (1) Demosaicing
@@ -42,9 +67,12 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   // the raw data to the channels
   Halide::Var x, y, c;
   Halide::Func cameraPipeline;
+
+  // pixel data from the sensor is normalized to the 0-1 range, so
+  // scale by 255 for the final image output.  Output image pixels
+  // should be in the 0-255 range.
   cameraPipeline(x, y, c) =
     input(x, y) * 255.0f;
-    //input(x, y);
 
   std::cout << "Realizing camera pipeline..." << std::endl;
 
@@ -53,31 +81,24 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
 
   std::cout << "Got output" << std::endl;
 
-  std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(width, height));
-  for (int row = 0; row < output.height(); row++) {
-    for (int col = 0; col < output.width(); col++) {
-      assert(output.channels() == 3);
+  
+  std::unique_ptr<Image<RgbPixel>> image = rgbImageFromHalide(output);
+  //(new Image<RgbPixel>(width, height));
+  //std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(width, height));
+  //for (int row = 0; row < output.height(); row++) {
+    //for (int col = 0; col < output.width(); col++) {
 
-      // Note: Halide uses the col, row convention
-      float r = output(col, row, 0);
-      float g = output(col, row, 1);
-      float b = output(col, row, 2);
+      //// Note: Halide uses the col, row, channel convention
+      //float r = output(col, row, 0);
+      //float g = output(col, row, 1);
+      //float b = output(col, row, 2);
 
-      auto& pixel = (*image)(row, col);
-
-      // pixel data from the sensor is normalized to the 0-1 range, so
-      // scale by 255 for the final image output.  Output image pixels
-      // should be in the 0-255 range.
-      pixel.r = r;
-      pixel.g = g;
-      pixel.b = b;
-
-
-      //pixel.r = val * 255.f;
-      //pixel.g = val * 255.f;
-      //pixel.b = val * 255.f;
-    }
-  }
+      //auto& pixel = (*image)(row, col);
+      //pixel.r = r;
+      //pixel.g = g;
+      //pixel.b = b;
+    //}
+  //}
 
   return image;
 
