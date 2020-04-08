@@ -1,6 +1,13 @@
+#include <iostream>
+
 #include "camera_pipeline.hpp"
 
 std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
+  // In this function you should implement your full RAW image processing pipeline.
+  //   (1) Demosaicing
+  //   (2) Address sensing defects such as bad pixels and image noise.
+  //   (3) Apply local tone mapping based on the local laplacian filter or exposure fusion.
+  //   (4) gamma correction
     
   // BEGIN: CS348K STUDENTS MODIFY THIS CODE
 
@@ -11,13 +18,14 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   const int width = sensor_->GetSensorWidth();
   const int height = sensor_->GetSensorHeight();
   auto raw_data = sensor_->GetSensorData(0, 0, width, height);
+
+#ifdef __USE_HALIDE__
+  std::cout << "Using Halide pipeline" << std::endl;
+  assert(false);
+
+#else
     
-  // In this function you should implement your full RAW image processing pipeline.
-  //   (1) Demosaicing
-  //   (2) Address sensing defects such as bad pixels and image noise.
-  //   (3) Apply local tone mapping based on the local laplacian filter or exposure fusion.
-  //   (4) gamma correction
-    
+  std::cout << "Using vanilla C++ pipeline" << std::endl;
   // allocate 3-channel RGB output buffer to hold the results after processing 
   std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(width, height));
   
@@ -40,6 +48,7 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   
   // return processed image output
   return image;
+#endif
 
   // END: CS348K STUDENTS MODIFY THIS CODE  
 }
