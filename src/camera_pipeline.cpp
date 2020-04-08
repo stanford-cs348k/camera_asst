@@ -1,5 +1,9 @@
 #include <iostream>
 
+#ifdef __USE_HALIDE__
+#include "Halide.h"
+#endif
+
 #include "camera_pipeline.hpp"
 
 std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
@@ -9,6 +13,10 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   //   (3) Apply local tone mapping based on the local laplacian filter or exposure fusion.
   //   (4) gamma correction
     
+  // The starter code copies the raw data from the sensor to all rgb
+  // channels. This results in a gray image that is just a
+  // visualization of the sensor's contents.
+
   // BEGIN: CS348K STUDENTS MODIFY THIS CODE
 
   // put the lens cap on if you'd like to measure a "dark frame"
@@ -21,17 +29,23 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
 
 #ifdef __USE_HALIDE__
   std::cout << "Using Halide pipeline" << std::endl;
-  assert(false);
+  Halide::Buffer<float> input;
 
+  // Halide pipeline to raw copy data
+  Halide::Var x, y;
+  Halide::Func rawCopy;
+  rawCopy(x, y) = input(x, y);
+
+  Halide::Buffer<float> output =
+    rawCopy.realize(input.width(), input.height(), input.channels());
+
+  assert(false);
 #else
     
   std::cout << "Using vanilla C++ pipeline" << std::endl;
   // allocate 3-channel RGB output buffer to hold the results after processing 
   std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(width, height));
   
-  // The starter code copies the raw data from the sensor to all rgb
-  // channels. This results in a gray image that is just a
-  // visualization of the sensor's contents.
   for (int row = 0; row < height; row++) {
     for (int col = 0; col < width; col++) {
       const auto val = raw_data->data(row, col);
