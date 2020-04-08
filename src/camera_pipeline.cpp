@@ -40,27 +40,42 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
 
   // Halide pipeline that just copies 
   // the raw data to the channels
-  Halide::Var x, y;
-  Halide::Func rawCopy;
-  rawCopy(x, y) = input(x, y);
+  Halide::Var x, y, c;
+  Halide::Func cameraPipeline;
+  cameraPipeline(x, y, c) =
+    input(x, y) * 255.0f;
+    //input(x, y);
 
+  std::cout << "Realizing camera pipeline..." << std::endl;
 
   Halide::Buffer<float> output =
-    rawCopy.realize(input.width(), input.height());
+    cameraPipeline.realize(input.width(), input.height(), 3);
+
+  std::cout << "Got output" << std::endl;
 
   std::unique_ptr<Image<RgbPixel>> image(new Image<RgbPixel>(width, height));
   for (int row = 0; row < output.height(); row++) {
     for (int col = 0; col < output.width(); col++) {
+      assert(output.channels() == 3);
+
       // Note: Halide uses the col, row convention
-      float val = output(col, row);
+      float r = output(col, row, 0);
+      float g = output(col, row, 1);
+      float b = output(col, row, 2);
+
       auto& pixel = (*image)(row, col);
 
       // pixel data from the sensor is normalized to the 0-1 range, so
       // scale by 255 for the final image output.  Output image pixels
       // should be in the 0-255 range.
-      pixel.r = val * 255.f;
-      pixel.g = val * 255.f;
-      pixel.b = val * 255.f;
+      pixel.r = r;
+      pixel.g = g;
+      pixel.b = b;
+
+
+      //pixel.r = val * 255.f;
+      //pixel.g = val * 255.f;
+      //pixel.b = val * 255.f;
     }
   }
 
