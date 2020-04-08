@@ -34,11 +34,32 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
 
   Halide::Buffer<float> input =
     burstSensorDataToHalide(raw_data_vec);
+  Halide::Var x, y, c;
+  Halide::Func averagedFrames, cameraPipeline;
+
+  // pixel data from the sensor is normalized to the 0-1 range, so
+  // scale by 255 for the final image output.  Output image pixels
+  // should be in the 0-255 range.
+  Halide::RDom dom(0, input.channels());
+  averagedFrames(x, y, c) = 0.0f;
+  averagedFrames(x, y, c) +=
+    input(x, y, dom) * 255.0f;
+  cameraPipeline(x, y, c) = averagedFrames(x, y, c) / (float) input.channels();
 
   //Halide::Buffer<float> input =
     //sensorDataToHalide(raw_data.get(), width, height);
 
   std::cout << "Wrote Halide input" << std::endl;
+  std::cout << "Realizing camera pipeline..." << std::endl;
+
+  Halide::Buffer<float> output =
+    cameraPipeline.realize(input.width(), input.height(), 3);
+
+  std::cout << "Got output" << std::endl;
+
+  std::unique_ptr<Image<RgbPixel>> image = rgbImageFromHalide(output);
+
+  return image;
 
   //// Halide pipeline that just copies 
   //// the raw data to the channels
