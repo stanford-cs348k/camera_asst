@@ -2,7 +2,7 @@
 
 #ifdef __USE_HALIDE__
 #include "Halide.h"
-#include "halide_utils.h"
+#include "halide_utils.hpp"
 #endif
 
 #include "camera_pipeline.hpp"
@@ -27,34 +27,39 @@ std::unique_ptr<Image<RgbPixel>> CameraPipeline::ProcessShot() const {
   const int width = sensor_->GetSensorWidth();
   const int height = sensor_->GetSensorHeight();
   auto raw_data = sensor_->GetSensorData(0, 0, width, height);
+  auto raw_data_vec = sensor_->GetBurstSensorData(0, 0, width, height);
 
 #ifdef __USE_HALIDE__
   std::cout << "Using Halide pipeline" << std::endl;
+
   Halide::Buffer<float> input =
-    sensorDataToHalide(raw_data.get(), width, height);
+    burstSensorDataToHalide(raw_data_vec);
+
+  //Halide::Buffer<float> input =
+    //sensorDataToHalide(raw_data.get(), width, height);
 
   std::cout << "Wrote Halide input" << std::endl;
 
-  // Halide pipeline that just copies 
-  // the raw data to the channels
-  Halide::Var x, y, c;
-  Halide::Func cameraPipeline;
+  //// Halide pipeline that just copies 
+  //// the raw data to the channels
+  //Halide::Var x, y, c;
+  //Halide::Func cameraPipeline;
 
-  // pixel data from the sensor is normalized to the 0-1 range, so
-  // scale by 255 for the final image output.  Output image pixels
-  // should be in the 0-255 range.
-  cameraPipeline(x, y, c) =
-    input(x, y) * 255.0f;
+  //// pixel data from the sensor is normalized to the 0-1 range, so
+  //// scale by 255 for the final image output.  Output image pixels
+  //// should be in the 0-255 range.
+  //cameraPipeline(x, y, c) =
+    //input(x, y) * 255.0f;
 
-  std::cout << "Realizing camera pipeline..." << std::endl;
+  //std::cout << "Realizing camera pipeline..." << std::endl;
 
-  Halide::Buffer<float> output =
-    cameraPipeline.realize(input.width(), input.height(), 3);
+  //Halide::Buffer<float> output =
+    //cameraPipeline.realize(input.width(), input.height(), 3);
 
-  std::cout << "Got output" << std::endl;
+  //std::cout << "Got output" << std::endl;
 
-  std::unique_ptr<Image<RgbPixel>> image = rgbImageFromHalide(output);
-  return image;
+  //std::unique_ptr<Image<RgbPixel>> image = rgbImageFromHalide(output);
+  //return image;
 
 #else
     

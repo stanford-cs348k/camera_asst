@@ -1,6 +1,30 @@
-#include "halide_utils.h"
+#include "halide_utils.hpp"
 
 #ifdef __USE_HALIDE__
+
+Halide::Buffer<float>
+burstSensorDataToHalide(const std::vector<std::unique_ptr<CameraSensorData<float> > >& raw_data) {
+
+  int nframes = raw_data.size();
+
+  assert(nframes > 0);
+
+  int width = raw_data.at(0)->width();
+  int height = raw_data.at(0)->height();
+
+  Halide::Buffer<float>
+    input(width, height, nframes);
+ 
+  for (int frame = 0; frame < nframes; frame++) {
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        input(col, row, frame) = raw_data.at(frame)->data(row, col);
+      }
+    }
+  }
+
+  return input;
+}
 
 Halide::Buffer<float>
 sensorDataToHalide(CameraSensorData<float>* raw_data,
