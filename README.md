@@ -27,7 +27,7 @@ The codebase uses a simple `Makefile` as the build system. To build the starter 
 You have the option of implementing this assignment either in ordinary C++ or in Halide <https://github.com/halide/Halide>, a C++ embedded DSL for image processing and machine learning.
 We have provided stubs of the pipeline for both vanilla C++ and Halide. Students who are interested
 in getting the highest performance possible will probably be better off using Halide, since it
-allows you to quickly experiment with many different loop schedules for a design.
+allows you to quickly experiment with many different loop schedules for a program.
 
 __Using Halide__
 
