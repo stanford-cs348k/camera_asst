@@ -37,7 +37,7 @@ Now you can run the camera. Just run:
 
  ![RAW Example](http://cs348k.stanford.edu/fall18content/asst/taxi_figure.jpg "RAW Data visualization")
 
-## Part 1 (30 points) ##
+# Part 1 (30 points): Basic Camera RAW Pipeline ##
 
 In the first part of the assignment you must process the raw image data to produce an RGB image that, simply put, looks as good as you can make it. The entry point to your code should be `CameraPipeline::ProcessShot()` in `camera_pipeline.cpp`.  This method reads RAW data from the sensor, and outputs an RGB image.
 
@@ -90,7 +90,7 @@ __Tips__:
 * If you are having trouble using some of the provided functionality, feel free to implement your own versions. We just ask that you do not modify existing classes, but add new ones if necessary.
 * The starter code makes heavy use of `std::unique_ptr`.  If you are not familiar with `std::unique_ptr`, see <https://shaharmike.com/cpp/unique-ptr/>. 
 
-# Part 2 (70 points): Burst Mode Alignment for Denoising + Local Tone Mapping #
+# Part 2 (70 points): Local Tone Mapping + Burst Mode Alignment for Denoising #
 
 When implementing your solution to the first part of this assignment, you might have noticed visual artifacts in your output. Consider the `taxi.bin` image:
 
