@@ -11,6 +11,7 @@
 class CameraPipelineInterface {
  public:
   explicit CameraPipelineInterface(CameraSensor* sensor) : sensor_(sensor) {}
+  virtual ~CameraPipelineInterface() {}
 
   // Takes a picture using the input sensor. The high-level process for "taking
   // a picture" involves a general processing pass (demosaic, denoise, tone map,
