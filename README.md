@@ -23,9 +23,15 @@ __Build Instructions__
 The codebase uses a simple `Makefile` as the build system. To build the starter code, run `make` from the top level directory. The assignment source code is in `src/`, and object files and binaries will be generated into `build/` and `bin/` respectively.
 
 You have the option of implementing this assignment either in ordinary C++ or in Halide <https://github.com/halide/Halide>, a C++ embedded DSL for image processing and machine learning.
-We have provided stubs of the pipeline for both vanilla C++ and Halide.
+We have provided stubs of the pipeline for both vanilla C++ and Halide. Students who are interested
+in getting the highest performance possible will probably be better off using Halide, since it
+allows you to quickly experiment with many different loop schedules for a design.
 
-To use Halide you will need to build and install it from the link <https://github.com/halide/Halide>. Once this is done set the environment variable `USE_HALIDE=1` and set environment variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
+__Using Halide__
+
+To use Halide you will need to build and install it from the link here: <https://github.com/halide/Halide>. Halide requires LLVM 8.0 or greater and a c++17 compiler. Once Halide is compiled set the environment variable `USE_HALIDE=1` and set environment variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
+We have provided some helper functions to load and store data from Halide buffers in the
+file `halide_utils.hpp`.
 
 __Running the starter code:__
 
