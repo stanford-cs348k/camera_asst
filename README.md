@@ -13,7 +13,7 @@ Grab the assignment starter code.
 
 To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/fall18content/asst/scenes.tgz>.
 
-For example, on the Linux SU myth machines:
+For example:
 
     wget http://cs348k.stanford.edu/fall18content/asst/scenes.tgz
     tar -xvf scenes.tgz
