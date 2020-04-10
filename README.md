@@ -24,10 +24,10 @@ __Build Instructions__
 
 The codebase uses a simple `Makefile` as the build system. To build the starter code, run `make` from the top level directory. The assignment source code is in `src/`, and object files and binaries will be generated into `build/` and `bin/` respectively.
 
-You have the option of implementing this assignment either in ordinary C++ or in Halide <https://github.com/halide/Halide>, a C++ embedded DSL for image processing and machine learning.
+You have the option of implementing this assignment either in C++ or in [Halide](https://halide-lang.org/). Halide is a domain-specific language for image processing embedded in C++. (Note: major parts of the real HDR+ pipeline at Google are implemented in Halide.)
 We have provided stubs of the pipeline for both vanilla C++ and Halide. Students who are interested
 in getting the highest performance possible will probably be better off using Halide, since it
-allows you to quickly experiment with many different loop schedules for a program.
+allows you to quickly experiment with many different loop schedules for a program.  Please see the [Halide site](https://halide-lang.org/) for [tutorials about the language](), and this [Youtube video](https://www.youtube.com/watch?v=3uiEyEKji0M).
 
 __Using Halide__
 
