@@ -15,7 +15,7 @@ To run the assignment, you will also need to download the scene datasets, locate
 
 For example:
 
-    wget http://cs348k.stanford.edu/fall20content/asst/asst1scenes.tgz
+    wget http://cs348k.stanford.edu/spring20content/asst/asst1scenes.tgz
     tar -xvf asst1scenes.tgz
 
 This is a large 640MB download since it contains burst sequences for several high-resolution captures. If you seek to work on Myth (and not a personal machine), you are going to need a larger AFS quota.  Please let the staff know if you require this, and we'll help you make the request to Stanford IT.
@@ -26,8 +26,8 @@ The codebase uses a simple `Makefile` as the build system. To build the starter 
 
 You have the option of implementing this assignment either in C++ or in [Halide](https://halide-lang.org/). Halide is a domain-specific language for image processing embedded in C++. (Note: major parts of the real HDR+ pipeline at Google are implemented in Halide.)
 We have provided stubs of the pipeline for both vanilla C++ and Halide. Students who are interested
-in getting the highest performance possible will probably be better off using Halide, since it
-allows you to quickly experiment with many different loop schedules for a program.  Please see the [Halide site](https://halide-lang.org/) for [tutorials about the language](https://halide-lang.org/tutorials/tutorial_introduction.html), and this [Youtube video](https://www.youtube.com/watch?v=3uiEyEKji0M).
+in attempt to create a high-performance implementation of the assignment are recommended to go the Halide route, since it
+allows you to quickly experiment with many different optimizations like parallelism, SIMD processing, and loop tiling.  Please see the [Halide site](https://halide-lang.org/) for [tutorials about the language](https://halide-lang.org/tutorials/tutorial_introduction.html), and this [Youtube video](https://www.youtube.com/watch?v=3uiEyEKji0M).
 
 __Using Halide__
 
