@@ -17,7 +17,7 @@ endif
 
 kcamera: $(OBJ_FILES)
 	@mkdir -p $(BIN_DIR)
-	g++ $(LDFLAGS) -o $(BIN_DIR)/$@ $^
+	g++ -o $(BIN_DIR)/$@ $^ $(LDFLAGS)
 
 clean:
 	\rm -rf $(BUILD_DIR) $(BIN_DIR)
