@@ -11,7 +11,7 @@ Grab the assignment starter code.
 
     git clone git@github.com:stanford-cs348k/camera_asst.git
 
-To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/spring20content/asst/asst1scenes.tgz>.
+To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/spring21content/assets/asst1scenes.tgz>.
 
 For example:
 
