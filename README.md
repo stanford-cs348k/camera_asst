@@ -18,7 +18,7 @@ For example:
     wget http://cs348k.stanford.edu/spring20content/asst/asst1scenes.tgz
     tar -xvf asst1scenes.tgz
 
-This is a large 640MB download since it contains burst sequences for several high-resolution captures. If you seek to work on Myth (and not a personal machine), you are going to need a larger AFS quota.  Please let the staff know if you require this, and we'll help you make the request to Stanford IT.
+This is a large 640 MB download since it contains burst sequences for several high-resolution captures. If you seek to work on Myth (and not a personal machine), you are going to need a larger AFS quota.  Please let the staff know if you require this, and we'll help you make the request to Stanford IT.
 
 __Build Instructions__
 
@@ -31,7 +31,7 @@ allows you to quickly experiment with many different optimizations like parallel
 
 __Using Halide__
 
-To use Halide you will need to build and install it from the link here: <https://github.com/halide/Halide>. Halide requires LLVM 8.0 or greater and a c++17 compiler. Once Halide is compiled set the environment variable `USE_HALIDE=1` and set environment variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
+Some students like to try using Halide to implement the assignment.  (NOTE: This is optional and we recommend you attempt a C++ version first, then reimplement in Halide if you have time/interest.) To use Halide you will need to build and install it from the link here: <https://github.com/halide/Halide>. Halide requires LLVM 8.0 or greater and a c++17 compiler. Once Halide is compiled set the environment variable `USE_HALIDE=1` and set environment variable `HALIDE_PATH` to point to the Halide source code directory on your machine.
 We have provided some helper functions to load and store data from Halide buffers in the
 file `halide_utils.hpp`.
 
