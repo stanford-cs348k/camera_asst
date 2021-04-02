@@ -200,7 +200,7 @@ The assignment will be graded on image quality. Your implementation should conta
 
 ## Handin ##
 
-This assignment will be handed in using Canvas:
+This assignment will be handed in using Gradescope:
 
  * Please hand in `camera_pipeline.cpp`, `camera_pipeline.hpp`, We should be able to build and run the code on the myth machines by dropping these files into a freshly checked out starter code tree.
  * Please also include a short writeup describing the algorithm you implemented for exposure fusion and burst denoising.
