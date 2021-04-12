@@ -139,7 +139,7 @@ In summary, here's a sketch of the modified exposure fusion algorithm (you shoul
 6. Extract the exposure fused image from the blended pyramid (flatten the pyramid) and use this as the Y channel of the final output image.
 
 For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
-![Exposure Fusion](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_figure.png? "Exposure Fusion")
+![Exposure Fusion](weight_examples/intermediates_and_result_exposure_fusion.png? "Exposure Fusion")
 
 White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
 
