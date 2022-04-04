@@ -9,13 +9,13 @@ In this assignment you will implement a simple RAW image processing pipeline for
 
 Grab the assignment starter code.
 
-    git clone git@github.com:stanford-cs348k/camera_asst.git
+    git clone https://github.com/stanford-cs348k/camera_asst.git
 
 To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/spring21content/assets/asst1scenes.tgz>.
 
 For example:
 
-    wget http://cs348k.stanford.edu/spring20content/asst/asst1scenes.tgz
+    wget http://cs348k.stanford.edu/spring21content/asst/asst1scenes.tgz
     tar -xvf asst1scenes.tgz
 
 This is a large 640 MB download since it contains burst sequences for several high-resolution captures. If you seek to work on Myth (and not a personal machine), you are going to need a larger AFS quota.  Please let the staff know if you require this, and we'll help you make the request to Stanford IT.
@@ -43,7 +43,7 @@ Now you can run the camera. Just run:
 
 (where `MY_SCENES_DIR` is where you extracted the scene datasets into) The camera will "take a picture" and output the result of processing the RAW sensor data from the sensor to `output.bmp`. The starter code just copies the sensor data verbatim into the red, green, and blue channels of the output image. (so the output is just a visualization of the RAW data from the sensor).  So for a scene that looks like the image at left, you should see output that looks a bit like this.
 
- ![RAW Example](http://cs348k.stanford.edu/fall18content/asst/taxi_figure.jpg "RAW Data visualization")
+ ![RAW Example](handout_imgs/taxi_figure.jpg "RAW Data visualization")
 
 # Part 1 (30 points): Basic Camera RAW Pipeline ##
 
@@ -65,8 +65,8 @@ __Tips:__
 * We guarantee that pixel defects (stuck pixels, pixels with extra sensitivity) are static defects that are the same for every photograph taken for a given scene.  Note that while the overall noise statistics of the sensor are the same per photograph, the perturbation of individual pixel values due to noise varies per photograph (that's the nature of noise!).
 * You may assume that RAW data read from the sensor is linear in incident light, and in the range [0, 1].
 * The following is the Bayer filter pattern used on the kPhone's sensor.  Pixel (0,0) is the top-left of the image.
-![Bayer Array](http://graphics.stanford.edu/courses/cs348v-18-winter/asst_images/asst2/bayer.jpg "Bayer color filter array for the kPhone 348V")
-* You should start with basic linear interpolation demosicing as [discussed in class](http://cs348k.stanford.edu/fall18/lecture/camerapipeline/slide_059).  However, we encourage you to attempt more advanced demosiacing solution as discussed [in lecture](http://cs348k.stanford.edu/fall18/lecture/camerapipeline/slide_067), or in [this paper that's listed under the course recommended readings page](https://ieeexplore.ieee.org/document/1407714).
+![Bayer Array](handout_imgs/bayer.jpg? "Bayer color filter array for the kPhone 348V")
+* You should start with basic linear interpolation demosaicing as [discussed in class](https://gfxcourses.stanford.edu/cs348k/spring22/lecture/camerapipeline1/slide_59).  However, we encourage you to attempt more advanced demosaicing solution as discussed [in lecture](https://gfxcourses.stanford.edu/cs348k/spring22/lecture/camerapipeline1/slide_71), or in [this paper that's listed under the course recommended readings page](https://ieeexplore.ieee.org/document/1407714).
 
 ## Description of the Starter Code ##
 
@@ -102,7 +102,7 @@ __Tips__:
 
 When implementing your solution to the first part of this assignment, you might have noticed visual artifacts in your output. Consider the `taxi.bin` image:
 
-![Noise visualization](http://cs348k.stanford.edu/fall18content/asst/taxi_noise_figure.png? "Noise visualization")
+![Noise visualization](handout_imgs/taxi_noise_figure.png? "Noise visualization")
 
 There are at least two issues you might notice here:
 1. *Under-exposure:* The scene exhibits high dynamic range, so to avoid over-exposing the bright sunset in the background, the image has been deliberately under-exposed. As a result, regions of the the image which don't receive as much illumination (e.g. the front parts of the taxis) are very dark. 
@@ -139,14 +139,14 @@ In summary, here's a sketch of the modified exposure fusion algorithm (you shoul
 6. Extract the exposure fused image from the blended pyramid (flatten the pyramid) and use this as the Y channel of the final output image.
 
 For example, here's our reference pipeline's dark and bright images with their corresponding weights and the final output:
-![Exposure Fusion](weight_examples/intermediates_and_result_exposure_fusion.png? "Exposure Fusion")
+![Exposure Fusion](handout_imgs/intermediates_and_result_exposure_fusion.png? "Exposure Fusion")
 
 White in the weight images represent a high value, and black represents a low value. As you can see, the weights in the dark image select the well-exposed sky in the background while the bright image selects the brightened taxis in the foreground. 
 
 __Note__: Be careful about whether you perform local tone mapping operations in linear intensity space (on luminance) or in a non-linear perceptual space (luma). The role of local tone mapping is to mimic how a human would perceive a scene if they were there in person. If we are using heuristics to select the exposure of different parts of the scene based on what we think would look good to a human, does it make more sense to apply these heuristics on luminance or luma values? How do you convert from luminance to luma?  How does one convert luma back to luminance?
 
 This algorithm makes the image look much brighter in the dark regions without blowing out the already bright regions. But what about the noise? let's zoom back into that dark region we were looking at before:
-![Tone Mapped Zoom](http://cs348k.stanford.edu/fall18content/asst/taxi_exposure_fusion_zoom_figure.png? "Exposure Fusion Zoom")
+![Tone Mapped Zoom](handout_imgs/taxi_exposure_fusion_zoom_figure.png? "Exposure Fusion Zoom")
 
 Notice that while this algorithm produces a result where there is detail in all regions, by boosting the dark regions (which are already prone to sensor noise), we have accentuated noise artifacts. Fortunately, burst mode alignment from the HDR+ paper solves this problem and is the next sub-part of this assignment.
 
@@ -156,7 +156,7 @@ In this sub-part of the assignment, you will write code to align and merge a bur
 
 To illustrate why aligning the burst is necessary, consider the output of simply summing each capture in burst, as shown below:
 
-![Average Denoising](http://cs348k.stanford.edu/fall18content/asst/taxi_averaging_figure.png#1 "Average Denoising")
+![Average Denoising](handout_imgs/taxi_averaging_figure.png? "Average Denoising")
 
 The resulting image is certainly less noisy, since summation increases signal to noise ratio in dark regions.  However, the result is also now blurry because the input images were captured at different points in time. This is the motivation for the HDR+ image *alignment* and *merging* steps. Here is a sketch of a simple implementation, though feel free to make modifications or enhancements to this algorithm that you think can produce a better result:
 
@@ -184,7 +184,7 @@ The merging algorithm in the HDR+ paper uses an advanced noise model and operate
 
 Now that your implementation can align/merge a burst of RAW images, and then apply exposure fusion to the result, you should obtain a result that looks something like this (obviously results will vary based on algorithms used):
 
-![Full Pipeline](http://cs348k.stanford.edu/fall18content/asst/taxi_merge_exposure_zoom_figure.png? "Full Pipeline")
+![Full Pipeline](handout_imgs/taxi_merge_exposure_zoom_figure.png? "Full Pipeline")
 
 __Test scenes:__
 Your primary test scenes are a subset of the scenes in Part 1. Specifically: `taxi.bin`, `church.bin`, and `path.bin`. These scenes each have a burst of 3 images. For each of these scenes, we've provided a `SCENE_solution_part2.bmp` which is the output of a reference pipeline which would achieve full points for this part of the assignment, and `SCENE_google.bmp` which is the output of the full Google HDR+ pipeline (as you can see, it's just a *bit* better than our reference implementation!).
