@@ -11,11 +11,11 @@ Grab the assignment starter code.
 
     git clone https://github.com/stanford-cs348k/camera_asst.git
 
-To run the assignment, you will also need to download the scene datasets, located at <http://cs348k.stanford.edu/spring21content/assets/asst1scenes.tgz>.
+To run the assignment, you will also need to download the scene datasets, located at <https://gfxcourses.stanford.edu/cs348k/spring21content/assets/asst1scenes.tgz>.
 
 For example:
 
-    wget http://cs348k.stanford.edu/spring21content/asst/asst1scenes.tgz
+    wget https://gfxcourses.stanford.edu/cs348k/spring21content/assets/asst1scenes.tgz
     tar -xvf asst1scenes.tgz
 
 This is a large 640 MB download since it contains burst sequences for several high-resolution captures. If you seek to work on Myth (and not a personal machine), you are going to need a larger AFS quota.  Please let the staff know if you require this, and we'll help you make the request to Stanford IT.
