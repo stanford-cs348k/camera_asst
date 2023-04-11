@@ -1,4 +1,4 @@
-# Stanford CS348K Assignment 1: <br/> Burst-Mode Camera RAW Processing #
+# Stanford CS348K Assignment: <br/> Burst-Mode Camera RAW Processing #
 
 In this assignment you will implement a simple RAW image processing pipeline for the camera of the world's hottest smartphone, the kPhone 348. Your job is to process the data coming off the device's sensor to produce the highest quality image you can. The assignment is split into two parts.
 
